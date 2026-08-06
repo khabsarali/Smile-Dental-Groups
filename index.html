@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clinical">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smile Dental Group — One Appointment. A Whole New Arch.</title>
+<meta name="description" content="A scroll-driven look inside a full-arch restoration at Smile Dental Group. Diagnostics, treatment and reveal — from the inside out.">
+<meta name="theme-color" content="#08131f">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Smile Dental Group — One Appointment. A Whole New Arch.">
+<meta property="og:description" content="Scroll inside the mouth. Watch a full arch restored, tooth by tooth.">
+
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/outfit-latin-wght-normal.woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="is-loading">
+
+<!-- ───────────────────────── Preloader ───────────────────────── -->
+<div class="preloader" id="preloader" role="status" aria-live="polite">
+  <div class="preloader__inner">
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
+      <path class="mark__tooth" d="M22 6c-4.4-3.1-11-2.6-13.4 1.6-2.5 4.4-1.3 10.2.3 15.6 1.3 4.3 2.4 8.5 3.1 12.1.5 2.6 1.7 4.2 3.5 4.2 2 0 2.9-1.7 3.6-4.6.5-2.2 1.3-4.1 2.9-4.1s2.4 1.9 2.9 4.1c.7 2.9 1.6 4.6 3.6 4.6 1.8 0 3-1.6 3.5-4.2.7-3.6 1.8-7.8 3.1-12.1 1.6-5.4 2.8-11.2.3-15.6C33 3.4 26.4 2.9 22 6Z"/>
+    </svg>
+    <p class="preloader__name">Smile Dental Group</p>
+    <div class="preloader__bar"><i id="preloaderFill"></i></div>
+    <p class="preloader__pct"><span id="preloaderPct">0</span><span class="dim">%</span></p>
+  </div>
+</div>
+
+<!-- ───────────────────────── Chrome ───────────────────────── -->
+<header class="chrome chrome--top">
+  <a class="brand" href="#top">
+    <svg class="brand__mark" viewBox="0 0 44 44" aria-hidden="true">
+      <path d="M22 6c-4.4-3.1-11-2.6-13.4 1.6-2.5 4.4-1.3 10.2.3 15.6 1.3 4.3 2.4 8.5 3.1 12.1.5 2.6 1.7 4.2 3.5 4.2 2 0 2.9-1.7 3.6-4.6.5-2.2 1.3-4.1 2.9-4.1s2.4 1.9 2.9 4.1c.7 2.9 1.6 4.6 3.6 4.6 1.8 0 3-1.6 3.5-4.2.7-3.6 1.8-7.8 3.1-12.1 1.6-5.4 2.8-11.2.3-15.6C33 3.4 26.4 2.9 22 6Z"/>
+    </svg>
+    <span class="brand__name">Smile<em>Dental Group</em></span>
+  </a>
+  <nav class="chrome__nav" aria-label="Primary">
+    <span class="chapter" id="chapterLabel" aria-live="polite">Hero</span>
+    <a class="btn btn--ghost" href="#book">Book a consult</a>
+  </nav>
+</header>
+
+<!-- ───────────────────────── Stage ───────────────────────── -->
+<div class="stage" id="stage" aria-hidden="true">
+  <canvas id="scene"></canvas>
+  <video id="videoTrack" class="video-track" playsinline muted preload="auto"></video>
+  <div class="stage__grade"></div>
+  <div class="stage__grain"></div>
+</div>
+
+<!-- Copy layers: pinned over the stage, cross-faded by scroll -->
+<div class="copy" id="copy" aria-hidden="true">
+  <article class="cue" data-cue="hero">
+    <p class="kicker">Smile Dental Group — Full Arch Restoration</p>
+    <h1 class="display">One appointment.<br>A whole new arch.</h1>
+    <p class="lede">Scroll to travel past the lips and watch thirty‑two teeth diagnosed, treated and restored — in the order we actually do it.</p>
+  </article>
+
+  <article class="cue cue--bottom" data-cue="entry">
+    <p class="kicker">Chapter 01 — Intake</p>
+    <h2 class="display display--sm">This is what<br>we start with.</h2>
+    <p class="lede">Staining, chipped edges, a missing lower molar, plaque along the gingival margin. Nothing here is unusual. All of it is fixable.</p>
+  </article>
+
+  <!-- Left-aligned: the canvas reserves the right gutter for the
+       radiographic callouts, which carry the findings themselves. -->
+  <article class="cue" data-cue="xray">
+    <p class="kicker">Chapter 02 — Diagnostics</p>
+    <h2 class="display display--sm">We look<br>through it.</h2>
+    <p class="lede">A single low‑dose sweep maps every root, canal and lesion before an instrument ever touches enamel.</p>
+  </article>
+
+  <article class="cue cue--bottom" data-cue="treatment">
+    <p class="kicker">Chapter 03 — Treatment</p>
+    <h2 class="display display--sm">Left to right.<br>Tooth by tooth.</h2>
+    <p class="lede">Ultrasonic scaling, caries removal, composite placement, light cure, polish. Five passes, one sitting.</p>
+  </article>
+
+  <article class="cue cue--top" data-cue="reveal">
+    <p class="kicker">Chapter 04 — Reveal</p>
+    <h2 class="display display--sm">Checked from<br>every angle.</h2>
+    <p class="lede">Shade‑matched, contoured, and closed into occlusion before you ever leave the chair.</p>
+  </article>
+
+  <!-- Bookends the hero: copy in the left third, face on the right,
+       so the headline never lands on top of the smile. -->
+  <article class="cue" data-cue="outro" id="book">
+    <p class="kicker">Now the part you came for</p>
+    <h2 class="display">Smile like<br>you mean it.</h2>
+    <p class="lede">Full‑arch consultations, same‑week scanning, transparent staged pricing.</p>
+    <div class="cta">
+      <a class="btn btn--solid" href="tel:+441234567890">Book a consult</a>
+      <a class="btn btn--ghost" href="mailto:hello@smiledentalgroup.com">hello@smiledentalgroup.com</a>
+    </div>
+    <p class="fineprint">Smile Dental Group · 12 Harley Mews, London · Mon–Sat</p>
+  </article>
+</div>
+
+<!-- Scroll cue -->
+<div class="scrollcue" id="scrollcue"><i></i><span>Scroll</span></div>
+
+<!-- Arch progress rail (treatment chapter) -->
+<div class="rail" id="rail" hidden>
+  <div class="rail__track"><i id="railFill"></i></div>
+  <div class="rail__meta"><span id="railTooth">#01</span><span id="railTool">Scaler</span></div>
+</div>
+
+<!-- ───────────────────────── Scroll driver ─────────────────────────
+     The page's only job is to be tall. Everything visual is drawn into
+     the pinned canvas above, driven by this element's scroll progress. -->
+<main id="top" class="scroller" aria-hidden="true">
+  <div class="scroller__track" id="track"></div>
+</main>
+
+<!-- ─────────────── Accessible / no-JS / reduced-motion document ───────────────
+     Real content, in the flow, for screen readers, crawlers and anyone who
+     has asked the OS to stop moving things around. -->
+<div class="doc" id="doc">
+  <header class="doc__head">
+    <p class="kicker">Smile Dental Group</p>
+    <h1>One appointment. A whole new arch.</h1>
+    <p class="lede">A full‑arch restoration, start to finish.</p>
+  </header>
+  <section>
+    <h2>Intake</h2>
+    <p>Every case starts with a photographic and tactile record of what is actually there: enamel staining, chipped incisal edges, a missing lower molar, plaque along the gingival margin, and early gingival recession.</p>
+  </section>
+  <section>
+    <h2>Diagnostics</h2>
+    <p>A single low‑dose radiographic sweep maps roots, canals and bone before treatment planning. Typical findings on a case like this one: caries at #14, a fracture at #19, and an extraction site at #30 awaiting restoration.</p>
+  </section>
+  <section>
+    <h2>Treatment</h2>
+    <p>Work runs left to right across the arch in five passes — ultrasonic scaling, caries removal with a high‑speed handpiece, composite placement, light curing, and polishing — so the whole arch is completed in a single sitting.</p>
+  </section>
+  <section>
+    <h2>Reveal</h2>
+    <p>The finished arch is shade‑matched and contoured, then closed into occlusion and checked from every angle before you leave the chair.</p>
+  </section>
+  <section>
+    <h2>Book a consult</h2>
+    <p>Full‑arch consultations, same‑week scanning and transparent staged pricing.<br>
+      <a href="tel:+441234567890">+44 1234 567890</a> · <a href="mailto:hello@smiledentalgroup.com">hello@smiledentalgroup.com</a><br>
+      12 Harley Mews, London · Mon–Sat</p>
+  </section>
+</div>
+
+<noscript>
+  <style>.preloader,.stage,.copy,.scrollcue,.scroller,.rail{display:none!important}.doc{display:block!important}body{overflow:auto!important}</style>
+</noscript>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/vendor/lenis.min.js" defer></script>
+<script src="assets/js/config.js" defer></script>
+<script src="assets/js/arch.js" defer></script>
+<script src="assets/js/instruments.js" defer></script>
+<script src="assets/js/scenes.js" defer></script>
+<script src="assets/js/renderer.js" defer></script>
+<script src="assets/js/video-track.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
