@@ -81,9 +81,12 @@ Two things dominated the frame budget and are worth knowing before editing:
 - **Clipping to a path and filling a rect** is much more expensive than filling
   the path directly. Tooth layers fill the crown path.
 
-Result: worst-case frame went from ~530 ms to ~83 ms, and sustained scrub from
-7 fps to 26 fps — measured with **GPU rasterisation disabled entirely**, which
-is a floor, not a typical case.
+Result: worst-case frame went from ~530 ms to ~100 ms, and sustained scrub from
+7 fps to ~16 fps — measured with **GPU rasterisation disabled entirely**, which
+is a floor, not a typical case. (It measured ~26 fps before the bite was opened
+wider for the intake and diagnostics chapters; twice the vertical spread means
+twice the screen area covered in teeth and gum, and in software that is paid
+for in fill rate. The layout was worth it.)
 
 Mobile drops the device-pixel-ratio cap, turns off bloom, widens the bite and
 pushes the camera in to suit a portrait frame, and hands the bottom band of the

@@ -141,19 +141,29 @@
     t.orbit = U.easeInOut(U.norm(rp, 0.02, 0.74)) * TAU;
     t.bloom = U.norm(rp, 0.28, 0.64);
 
-    /* Jaw separation. Wide for intake and diagnostics, tighter
-       through treatment so both arches frame the working area,
-       open again for the orbit, then closed for the bite check. */
+    /* Jaw separation. Intake and diagnostics run it wide — partly
+       because that is what a mouth prop does, partly because the
+       void between the arches is where those two chapters put their
+       copy and it has to be tall enough to hold it. Treatment
+       tightens so both arches frame the working area, the orbit
+       reopens, and the bite check closes it. */
     var narrow = U.easeInOut(U.norm(p, 0.395, 0.46));
     var reopen = U.easeInOut(U.norm(p, 0.715, 0.775));
-    t.gap = U.lerp(U.lerp(1, 0.62, narrow), 0.92, reopen) *
+    t.gap = U.lerp(U.lerp(1.5, 0.62, narrow), 0.92, reopen) *
             (1 - U.easeInOut(U.norm(rp, 0.70, 1)));
 
     /* Arch camera */
     var zoomIn = U.easeInOut(U.norm(p, 0.15, 0.245));
     var macro = U.easeInOut(U.norm(p, 0.40, 0.47)) * (1 - U.easeInOut(U.norm(p, 0.70, 0.755)));
     var pullOut = U.easeInOut(U.norm(out, 0.02, 0.55));
+    /* Diagnostics is the only chapter that has to fit the roots as
+       well as the crowns, and with the bite wide open that is a
+       taller subject than any other frame. Ease back for it. */
+    var roots = U.easeInOut(U.norm(p, 0.25, 0.31)) *
+                (1 - U.easeInOut(U.norm(p, 0.38, 0.43)));
+
     t.archZoom = U.lerp(0.42, 1, zoomIn) * (1 + macro * 0.12) *
+                 U.lerp(1, 0.86, roots) *
                  U.lerp(1, 1.26, U.easeInOut(U.norm(rp, 0, 0.8))) *
                  U.lerp(1, 0.5, pullOut);
     t.pan = macro;

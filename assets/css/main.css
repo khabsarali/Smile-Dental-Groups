@@ -297,7 +297,17 @@ body[data-track='video'] #scene { opacity: 0; }
   justify-items: center;
   text-align: center;
 }
-.cue--center > * { max-width: min(34ch, 92vw); }
+.cue--center > * { max-width: min(44ch, 92vw); }
+/* Intake sits in the void between the open jaws. That gap is finite,
+   so the block is lifted off centre to clear the lower arch. Landscape
+   only — portrait puts every chapter's copy in the bottom band, and
+   the attribute selector would otherwise outrank that rule. */
+@media (min-width: 781px) {
+  .cue[data-cue='entry'] {
+    padding-bottom: clamp(180px, 28vh, 270px);
+  }
+  .cue[data-cue='entry'] .lede { margin-top: clamp(12px, 1.8vh, 20px); }
+}
 .cue--right {
   justify-items: end;
   text-align: right;
