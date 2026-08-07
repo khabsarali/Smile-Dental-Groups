@@ -50,7 +50,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       const height = window.innerHeight;
       const isMobile = width < 768;
       const isDesktop = width >= 1024;
-      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
+      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 2.0 : 2.5);
 
       if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
         canvas.width = Math.round(width * dpr);
@@ -209,6 +209,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-white">
       <canvas
         ref={canvasRef}
+        style={{ imageRendering: 'auto' }}
         className="w-full h-full block select-none"
       />
     </div>

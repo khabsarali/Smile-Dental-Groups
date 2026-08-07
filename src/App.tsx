@@ -10,8 +10,6 @@ import { Navbar } from './ui/Navbar';
 
 import { HeroSequenceCanvas } from './components/hero/HeroSequenceCanvas';
 import { ThreeBackground } from './components/hero/ThreeBackground';
-import { HeroOverlayText } from './components/hero/HeroOverlayText';
-import { StageIndicator } from './components/hero/StageIndicator';
 import { Footer } from './components/sections/Footer';
 
 import { BeforeAfterSlider } from './components/sections/BeforeAfterSlider';
@@ -116,7 +114,7 @@ export function App() {
       {/* Page Routing */}
       {currentPage === 'home' && (
         <>
-          {/* Fixed Full-Screen Global 3D Background Canvas Layer */}
+          {/* Fixed Full-Screen 3D Background Canvas Layer */}
           <HeroSequenceCanvas
             images={images}
             scrollProgress={globalScrollProgress}
@@ -124,25 +122,14 @@ export function App() {
             ensureFrameLoaded={ensureFrameLoaded}
           />
 
-          {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
+          {/* Fixed Full-Screen R3F 3D Particle Overlay */}
           <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
 
-          {/* Fixed Side Rail Stage Indicator */}
-          <StageIndicator currentStage={currentStage} progress={globalScrollProgress} />
+          {/* Clean 3D Scroll Journey Viewport (100% Unobstructed 3D Animation) */}
+          <div id="hero-container" className="relative w-full h-[500vh] z-20 pointer-events-none" />
 
-          {/* 3D Keynote Interactive Scroll Viewport */}
-          <div id="hero-container" className="relative w-full h-[500vh] z-20">
-            <div className="sticky top-0 left-0 w-full h-screen">
-              <HeroOverlayText
-                stage={currentStage}
-                progress={globalScrollProgress}
-                onNavigate={handleNavigate}
-              />
-            </div>
-          </div>
-
-          {/* Post-Animation Homepage Sections Flow */}
-          <main className="relative z-20 bg-white/90 backdrop-blur-xl border-t border-slate-200/60 shadow-2xl">
+          {/* Website Content Begins Immediately After Final Smile Reveal */}
+          <main className="relative z-30 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 shadow-[0_-20px_50px_rgba(15,23,42,0.1)] transition-all duration-700">
             {/* 1. Before & After Gallery */}
             <BeforeAfterSlider />
 
@@ -155,7 +142,7 @@ export function App() {
             {/* 4. Frequently Asked Questions */}
             <FAQSection />
 
-            {/* 5. Contact Us & Appointment Reservation */}
+            {/* 5. Contact Us & Reservation */}
             <ContactSection />
           </main>
         </>
@@ -167,7 +154,7 @@ export function App() {
       {currentPage === 'appointment' && <AppointmentPage />}
 
       {/* Luxury Footer Navigation Hub */}
-      <div className="relative z-20">
+      <div className="relative z-30">
         <Footer onNavigate={handleNavigate} />
       </div>
     </div>
