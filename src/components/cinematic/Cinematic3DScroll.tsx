@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Smile, ChevronDown, Calendar, ArrowRight } from 'lucide-react';
+import { Sparkles, Scan, Zap, ShieldCheck, Smile, ChevronDown, Calendar, ArrowRight, Activity, Sliders } from 'lucide-react';
 import { TOTAL_FRAMES, SCENES } from '../../engine/FrameManifest';
 import { FrameAsset, globalFrameLoader } from '../../engine/FrameLoader';
+import { soundFX } from '../../ui/SoundEffects';
 
 export const Cinematic3DScroll: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,15 +14,15 @@ export const Cinematic3DScroll: React.FC = () => {
   // Mutable animation references (Zero React re-renders on scroll movement)
   const targetScrollRef = useRef<number>(0);
   const currentInterpolatedScrollRef = useRef<number>(0);
-  const lastRenderedFloatFrameRef = useRef<number>(-1);
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Minimal UI state updated only when scene milestone changes
+  // UI state for telemetry and milestones
   const [activeSceneId, setActiveSceneId] = useState<number>(1);
   const [displayFrameIndex, setDisplayFrameIndex] = useState<number>(1);
+  const [scrollPercent, setScrollPercent] = useState<number>(0);
   const [isFinalFrameReached, setIsFinalFrameReached] = useState<boolean>(false);
 
-  // Window scroll listener updating mutable ref (Decoupled 60 FPS)
+  // Scroll listener updating mutable ref (Decoupled 60 FPS)
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
@@ -33,9 +34,10 @@ export const Cinematic3DScroll: React.FC = () => {
       const progress = Math.max(0, Math.min(1, -rect.top / scrollableDist));
       targetScrollRef.current = progress;
 
-      // Update scene milestone only on integer boundaries (not on every raw pixel)
+      // Update UI metrics on frame changes
       const currentFrameNum = Math.min(150, Math.max(1, Math.round(progress * 149) + 1));
       setDisplayFrameIndex(currentFrameNum);
+      setScrollPercent(Math.round(progress * 100));
 
       let scId = 1;
       for (const scene of SCENES) {
@@ -45,7 +47,7 @@ export const Cinematic3DScroll: React.FC = () => {
         }
       }
       setActiveSceneId(scId);
-      setIsFinalFrameReached(progress >= 0.96);
+      setIsFinalFrameReached(progress >= 0.95);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -54,6 +56,19 @@ export const Cinematic3DScroll: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+  }, []);
+
+  // Jump to specific scene milestone
+  const jumpToScene = useCallback((sceneIndex: number) => {
+    if (!containerRef.current) return;
+    soundFX.playClick();
+
+    const scene = SCENES[sceneIndex];
+    const targetProgress = scene.startFrame / (TOTAL_FRAMES - 1);
+    const scrollableDist = containerRef.current.scrollHeight - window.innerHeight;
+    const targetScrollY = containerRef.current.offsetTop + targetProgress * scrollableDist;
+
+    window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
   }, []);
 
   // Desktop mouse parallax listener
@@ -229,7 +244,6 @@ export const Cinematic3DScroll: React.FC = () => {
       }
 
       ctx.restore();
-      lastRenderedFloatFrameRef.current = floatFrame;
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -241,6 +255,46 @@ export const Cinematic3DScroll: React.FC = () => {
   }, [activeSceneId]);
 
   const activeScene = SCENES[activeSceneId - 1] || SCENES[0];
+
+  const stageSpecs = [
+    {
+      specs: [
+        { label: 'Erosion Depth', val: '1.8 mm' },
+        { label: 'Crooked Offset', val: '+14.2°' },
+        { label: 'Gums', val: 'Inflamed' },
+      ],
+    },
+    {
+      specs: [
+        { label: 'CBCT Voxel', val: '75 μm' },
+        { label: 'Root Canals', val: 'Mapped 3D' },
+        { label: 'Bone Density', val: 'Type II' },
+      ],
+    },
+    {
+      specs: [
+        { label: 'Laser Wave', val: '2,940 nm' },
+        { label: 'Force Vector', val: '0.25 N Gentle' },
+        { label: 'Archwire', val: 'NiTi Active' },
+      ],
+    },
+    {
+      specs: [
+        { label: 'Shade', val: 'VITA BL1 White' },
+        { label: 'Ceramic Matrix', val: 'LiSi2 Disilicate' },
+        { label: 'Occlusion', val: '100% Symmetrical' },
+      ],
+    },
+    {
+      specs: [
+        { label: 'Symmetry Ratio', val: '99.8% Golden Arc' },
+        { label: 'Smile Curve', val: 'Harmonious' },
+        { label: 'Patient Smile', val: 'Radiant & Natural' },
+      ],
+    },
+  ];
+
+  const currentSpecs = stageSpecs[activeSceneId - 1] || stageSpecs[0];
 
   return (
     <div ref={containerRef} className="relative w-full h-[600vh] bg-[#05080E]">
@@ -264,22 +318,46 @@ export const Cinematic3DScroll: React.FC = () => {
                 Home of Smiles
               </span>
               <span className="text-[10px] font-mono tracking-widest text-[#38BDF8] uppercase block">
-                Advanced 3D Dentistry
+                3D Transformation Progress
               </span>
             </div>
           </div>
 
           {/* Frame & Progress Counter */}
-          <div className="glass-panel px-4 py-2 rounded-full flex items-center gap-3 border border-white/15">
+          <div className="glass-panel px-4 py-2 rounded-full flex items-center gap-3 border border-white/15 shadow-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-xs font-mono font-bold text-slate-200">
-              FRAME {String(displayFrameIndex).padStart(3, '0')} / 150
+              FRAME {String(displayFrameIndex).padStart(3, '0')} / 150 ({scrollPercent}%)
             </span>
           </div>
         </header>
 
-        {/* Floating Minimal Cinematic HUD Badges */}
-        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-6 sm:p-10 pt-24 pb-12">
+        {/* Right Quick-Jump Interactive Stage Navigator */}
+        <div className="hidden md:flex flex-col gap-2 absolute right-6 top-1/2 -translate-y-1/2 z-20 pointer-events-auto">
+          {SCENES.map((sc, i) => {
+            const isCurrent = activeSceneId === sc.id;
+            return (
+              <button
+                key={sc.id}
+                onClick={() => jumpToScene(i)}
+                onMouseEnter={() => soundFX.playHover()}
+                className={`group flex items-center gap-3 px-3.5 py-2 rounded-2xl transition-all duration-300 cursor-pointer border ${
+                  isCurrent
+                    ? 'bg-slate-900/90 border-[#00A3FF] text-white shadow-[0_0_20px_rgba(0,163,255,0.4)] scale-105'
+                    : 'glass-panel border-white/10 text-slate-400 hover:text-white hover:border-white/30'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full transition-all ${isCurrent ? 'bg-[#00A3FF] shadow-[0_0_8px_#00A3FF]' : 'bg-slate-600'}`} />
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-left">
+                  {sc.badge.split('//')[1]?.trim() || sc.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Floating Minimal Cinematic HUD Badges (Positioned cleanly away from the jaw) */}
+        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-6 sm:p-10 pt-24 pb-10">
           {/* Top Title Overlay */}
           <div className="max-w-xl">
             <AnimatePresence mode="wait">
@@ -300,20 +378,38 @@ export const Cinematic3DScroll: React.FC = () => {
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-lg">
                   {activeScene.tagline}
                 </p>
+
+                {/* Live Diagnostic Specs Bar */}
+                <div className="grid grid-cols-3 gap-2 pt-2 max-w-md">
+                  {currentSpecs.specs.map((sp, idx) => (
+                    <div key={idx} className="bg-slate-950/60 rounded-xl p-2 border border-white/10 text-center backdrop-blur-md">
+                      <span className="block text-[9px] font-mono text-slate-400 uppercase tracking-tight">
+                        {sp.label}
+                      </span>
+                      <span className="text-xs font-bold text-[#38BDF8] truncate block">
+                        {sp.val}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
           {/* Bottom Progress Bar & Milestone Tracker */}
-          <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
+          <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-3">
             {/* 5 Milestone Step Trackers */}
             <div className="w-full glass-panel px-5 py-3 rounded-2xl flex items-center justify-between gap-2 border border-white/15 shadow-2xl">
-              {SCENES.map((sc) => {
+              {SCENES.map((sc, i) => {
                 const isActive = activeSceneId === sc.id;
                 const isPassed = activeSceneId > sc.id;
 
                 return (
-                  <div key={sc.id} className="flex-1 flex flex-col items-center gap-1.5">
+                  <div
+                    key={sc.id}
+                    onClick={() => jumpToScene(i)}
+                    className="flex-1 flex flex-col items-center gap-1.5 cursor-pointer pointer-events-auto"
+                  >
                     <div className="w-full flex items-center">
                       <div
                         className={`h-1.5 w-full rounded-full transition-all duration-500 ${
@@ -330,7 +426,7 @@ export const Cinematic3DScroll: React.FC = () => {
                         isActive ? 'text-[#38BDF8] font-bold' : isPassed ? 'text-slate-300' : 'text-slate-500'
                       }`}
                     >
-                      {sc.name.split(' ')[0]}
+                      Stage 0{sc.id}
                     </span>
                   </div>
                 );
@@ -344,7 +440,7 @@ export const Cinematic3DScroll: React.FC = () => {
                 transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
                 className="inline-flex items-center gap-2 text-xs font-mono text-slate-400 tracking-wider"
               >
-                <span>SCROLL DOWN TO PROGRESS TRANSFORMATION</span>
+                <span>SCROLL DOWN TO PROGRESS JAW TRANSFORMATION</span>
                 <ChevronDown className="w-4 h-4 text-[#00A3FF]" />
               </motion.div>
             )}
@@ -373,11 +469,15 @@ export const Cinematic3DScroll: React.FC = () => {
                   Experience precision cosmetic dentistry, porcelain restorations, and painless orthodontic care.
                 </p>
                 <button
-                  onClick={() => alert('Consultation demo initialized.')}
+                  onClick={() => {
+                    soundFX.playClick();
+                    const el = document.getElementById('appointment');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="glass-button w-full py-3 px-5 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold text-white shadow-lg cursor-pointer"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>Book an Appointment</span>
+                  <span>Book VIP Consultation</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
