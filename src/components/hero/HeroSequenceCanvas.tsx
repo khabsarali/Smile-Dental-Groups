@@ -23,7 +23,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
       trigger: containerRef.current,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.1, // smooth lag for buttery 60 FPS scroll
+      scrub: 0.05, // Snappy hyper-responsive 60 FPS scroll tracking
       onUpdate: (self) => {
         const prog = self.progress;
         setScrollProgress(prog);
@@ -55,29 +55,31 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
     };
   }, [images, onStageChange]);
 
-  // Canvas drawing loop with sub-frame alpha crossfading
+  // Canvas drawing loop with sub-frame alpha crossfading & high resolution
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || images.length === 0) return;
 
-    const ctx = canvas.getContext('2d', { alpha: false });
+    const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
     if (!ctx) return;
 
     let animationFrameId: number;
 
     const render = () => {
-      // Calculate responsive canvas dimensions
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // High-resolution Retina & 4K device pixel ratio scaling
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
+      if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
       }
 
       ctx.save();
       ctx.scale(dpr, dpr);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
 
       // Studio background color fill
       ctx.fillStyle = '#05080E';

@@ -32,10 +32,10 @@ export function App() {
   // Initialize Lenis Smooth Scroll Engine & Sync with GSAP ScrollTrigger
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.9,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      wheelMultiplier: 1,
+      wheelMultiplier: 1.2,
     });
 
     lenis.on('scroll', ScrollTrigger.update);

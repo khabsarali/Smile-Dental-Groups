@@ -98,8 +98,9 @@ export const ThreeBackground: React.FC<ThreeOverlayProps> = ({ stage, progress }
   return (
     <div className="absolute inset-0 pointer-events-none z-10">
       <Canvas
+        dpr={[1, 2.5]}
         camera={{ position: [0, 0, 5], fov: 60 }}
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       >
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#0284C7" />
