@@ -1,18 +1,18 @@
 /**
- * Home of Smiles Dental - 284 Master Frame Manifest
- * Sequential 3D Scroll Journey: ezgif-frame-001.png -> ezgif-frame-284.png
+ * Home of Smiles Dental - 150 High-Quality Keyframe Manifest
+ * Intelligently sampled from original 284 master images to preserve the full 6-phase dental journey.
  */
 
 export interface FrameManifestEntry {
-  globalIndex: number; // 0 to 283
-  frameNumber: number; // 1 to 284
-  frameStr: string;    // "001" to "284"
-  path: string;        // "/assets/sequence/ezgif-frame-001.png"
+  globalIndex: number; // 0 to 149
+  frameNumber: number; // 1 to 150
+  frameStr: string;    // "001" to "150"
+  path: string;        // "/assets/optimized-150/frame-001.png"
 }
 
-export const TOTAL_FRAMES = 284;
+export const TOTAL_FRAMES = 150;
 
-function build284Manifest(): FrameManifestEntry[] {
+function build150Manifest(): FrameManifestEntry[] {
   const entries: FrameManifestEntry[] = new Array(TOTAL_FRAMES);
 
   for (let i = 0; i < TOTAL_FRAMES; i++) {
@@ -22,11 +22,21 @@ function build284Manifest(): FrameManifestEntry[] {
       globalIndex: i,
       frameNumber,
       frameStr,
-      path: `/assets/sequence/ezgif-frame-${frameStr}.png`,
+      path: `/assets/optimized-150/frame-${frameStr}.png`,
     };
   }
 
   return entries;
 }
 
-export const FRAME_MANIFEST: FrameManifestEntry[] = build284Manifest();
+export const FRAME_MANIFEST: FrameManifestEntry[] = build150Manifest();
+
+// 6 Transformation Phases breakdown within the 150 frames
+export const PHASES = [
+  { phase: 1, name: 'Damaged Jaw & Crooked Teeth Diagnostics', startFrame: 1, endFrame: 30 },
+  { phase: 2, name: 'Digital 3D CBCT Holographic X-Ray & Root Mapping', startFrame: 31, endFrame: 58 },
+  { phase: 3, name: 'Orthodontic Braces & Laser Treatment', startFrame: 59, endFrame: 90 },
+  { phase: 4, name: 'Healthy Porcelain Teeth & Whitening Alignment', startFrame: 91, endFrame: 112 },
+  { phase: 5, name: 'Jaw to Face 360° Transformation & Mouth Integration', startFrame: 113, endFrame: 132 },
+  { phase: 6, name: 'Smiling Woman Reveal & Radiant Confident Smile', startFrame: 133, endFrame: 150 },
+];

@@ -3,13 +3,13 @@ import { FRAME_MANIFEST, TOTAL_FRAMES } from '../engine/FrameManifest';
 
 export type FrameAsset = ImageBitmap | HTMLImageElement;
 
-const MAX_RAM_CACHE_FRAMES = 48; // Sliding window buffer (Memory capped < 35MB)
-const LOOKAHEAD_WINDOW = 20; // Preload ahead in scroll direction
-const LOOKBEHIND_WINDOW = 8; // Retain recent frames for smooth reverse scroll
-const MAX_CONCURRENT_DOWNLOADS = 6; // Controlled concurrency to prevent network saturation
+const MAX_RAM_CACHE_FRAMES = 40; // Sliding window buffer (Memory capped < 30MB)
+const LOOKAHEAD_WINDOW = 18; // Preload ahead in scroll direction
+const LOOKBEHIND_WINDOW = 6; // Retain recent frames for smooth reverse scroll
+const MAX_CONCURRENT_DOWNLOADS = 6; // Controlled concurrency to prevent network choke
 
 export function useImagePreloader() {
-  const [isReady, setIsReady] = useState<boolean>(true); // Immediate interactive launch (< 0.1s)
+  const [isReady, setIsReady] = useState<boolean>(true); // Immediate 0.0s interactive render
   const cacheRef = useRef<Map<number, FrameAsset>>(new Map());
   const pendingRequestsRef = useRef<Map<number, Promise<FrameAsset | null>>>(new Map());
   const activeDownloadsCountRef = useRef<number>(0);
@@ -17,7 +17,7 @@ export function useImagePreloader() {
   const lastTargetFrameRef = useRef<number>(0);
   const lastScrollDirectionRef = useRef<'down' | 'up'>('down');
 
-  // Evict distant frames to keep memory consumption low
+  // Evict distant frames to keep memory consumption low (< 30MB)
   const evictDistantFrames = useCallback((currentFrame: number) => {
     if (cacheRef.current.size <= MAX_RAM_CACHE_FRAMES) return;
 
@@ -28,7 +28,7 @@ export function useImagePreloader() {
       if (protectedIndices.has(idx)) continue;
 
       const distance = Math.abs(idx - currentFrame);
-      if (distance > 28) {
+      if (distance > 24) {
         if ('close' in asset && typeof (asset as ImageBitmap).close === 'function') {
           try {
             (asset as ImageBitmap).close();
@@ -167,7 +167,7 @@ export function useImagePreloader() {
     }
 
     // Bidirectional nearest neighbor search
-    for (let offset = 1; offset <= 20; offset++) {
+    for (let offset = 1; offset <= 16; offset++) {
       if (cacheRef.current.has(frameIndex - offset)) {
         return cacheRef.current.get(frameIndex - offset)!;
       }
@@ -179,25 +179,25 @@ export function useImagePreloader() {
     return cacheRef.current.get(0) || null;
   }, []);
 
-  // Initial Startup Preload: Download and decode initial 10 frames (< 0.2s)
+  // Initial Startup Preload: Download and decode initial 10 frames (< 0.15s)
   useEffect(() => {
     let isMounted = true;
 
     const streamInitial = async () => {
-      // First load frame 0 (ezgif-frame-001) immediately
+      // First load frame 0 (frame-001.png) immediately
       await fetchAndDecodeFrame(0);
 
-      // Preload initial 10 frames (ezgif-frame-001 through ezgif-frame-010)
+      // Preload initial 10 frames
       for (let i = 1; i <= 10; i++) {
         if (!isMounted) break;
         requestFramePriority(i, true);
       }
 
-      // Preload the final perfected smile anchor frame (ezgif-frame-284) in background
+      // Preload the final perfected smile anchor frame (frame-150.png) in background
       requestFramePriority(TOTAL_FRAMES - 1, false);
 
-      // Progressively stream in batches: 021-040, 041-060, etc.
-      for (let i = 11; i < Math.min(60, TOTAL_FRAMES); i++) {
+      // Progressively stream upcoming frames
+      for (let i = 11; i < Math.min(45, TOTAL_FRAMES); i++) {
         if (!isMounted) break;
         requestFramePriority(i, false);
       }
@@ -211,7 +211,7 @@ export function useImagePreloader() {
   }, [fetchAndDecodeFrame, requestFramePriority]);
 
   return {
-    totalCount: TOTAL_FRAMES, // Exactly 284 frames
+    totalCount: TOTAL_FRAMES, // Exactly 150 frames
     isLoaded: isReady,
     ensureFrameLoaded,
     getCachedFrame,
