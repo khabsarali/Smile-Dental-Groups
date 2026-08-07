@@ -66,9 +66,9 @@ export const BeforeAfterSlider: React.FC = () => {
           >
             {/* AFTER Image (Full Layer underneath) */}
             <img
-              src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&q=80&w=1400"
+              src="/assets/scenes/scene-4/ezgif-frame-280.png"
               alt="Restored Smile After Treatment"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain bg-[#05080E]"
             />
             <div className="absolute top-6 right-6 z-10 glass-panel-glow px-4 py-2 rounded-full text-xs font-mono font-bold text-[#0284C7] border border-[#0284C7]/40 shadow-lg flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> AFTER RESTORATION
@@ -80,9 +80,9 @@ export const BeforeAfterSlider: React.FC = () => {
               style={{ width: `${sliderPosition}%` }}
             >
               <img
-                src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1400"
+                src="/assets/scenes/scene-1/ezgif-frame-050.png"
                 alt="Damaged Smile Before Treatment"
-                className="absolute inset-0 h-full max-w-none object-cover grayscale brightness-90 contrast-125"
+                className="absolute inset-0 h-full max-w-none object-contain bg-[#05080E]"
                 style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%' }}
               />
               <div className="absolute top-6 left-6 z-10 glass-panel px-4 py-2 rounded-full text-xs font-mono font-bold text-slate-800 border border-slate-300 shadow-lg">
