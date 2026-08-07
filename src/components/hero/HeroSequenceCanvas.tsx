@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { FrameAsset, TOTAL_KEYFRAMES } from '../../hooks/useImagePreloader';
+import { FrameAsset, TOTAL_KEYFRAMES, OPTIMIZED_KEYFRAMES } from '../../hooks/useImagePreloader';
 
 interface HeroSequenceCanvasProps {
   scrollProgress: number;
@@ -18,6 +18,15 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
 
+  // Pre-instantiate initial frame immediately on mount
+  useEffect(() => {
+    const initialImg = new Image();
+    initialImg.src = OPTIMIZED_KEYFRAMES[0].path;
+    initialImg.onload = () => {
+      lastDrawnFrameRef.current = initialImg;
+    };
+  }, []);
+
   // Tab visibility listener to pause render loop when tab is hidden
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -32,7 +41,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   // Anti-Gravity 60 FPS Canvas Render Loop
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !getCachedFrame) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
     if (!ctx) return;
@@ -60,7 +69,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      // 1. Dark Luxury Studio Volumetric Background (#05080E with soft blue ambient glow)
+      // 1. Dark Luxury Studio Volumetric Background (#05080E)
       const bgGrad = ctx.createRadialGradient(
         width / 2,
         height / 2,
@@ -75,7 +84,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Optimized Keyframe Calculation across exactly 140 selected keyframes
+      // 2. Optimized Keyframe Calculation across 140 selected keyframes
       const floatFrame = Math.max(0, Math.min(TOTAL_KEYFRAMES - 1, scrollProgress * (TOTAL_KEYFRAMES - 1)));
       const index1 = Math.floor(floatFrame);
       const index2 = Math.min(TOTAL_KEYFRAMES - 1, index1 + 1);
@@ -86,8 +95,8 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         ensureFrameLoaded(index1);
       }
 
-      const img1 = getCachedFrame(index1) || lastDrawnFrameRef.current;
-      const img2 = getCachedFrame(index2) || img1;
+      const img1 = (getCachedFrame ? getCachedFrame(index1) : null) || lastDrawnFrameRef.current;
+      const img2 = (getCachedFrame ? getCachedFrame(index2) : null) || img1;
 
       if (img1) {
         lastDrawnFrameRef.current = img1;
@@ -109,7 +118,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             renderW = height * imgAspect;
           }
 
-          // Anti-Gravity Sinusoidal Floating Oscillation (Levitating suspended in 3D air)
+          // Anti-Gravity Sinusoidal Floating Oscillation
           const now = Date.now();
           const floatY = Math.sin(now * 0.0018) * 10;
           const floatX = Math.cos(now * 0.0012) * 5;
@@ -142,7 +151,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
           }
 
-          // 6. Cinematic Glass Reflection & Specular Enamel Sweeps
+          // 6. Cinematic Lighting & Specular Glints
           ctx.globalAlpha = 1.0;
 
           if (currentStage === 2) {

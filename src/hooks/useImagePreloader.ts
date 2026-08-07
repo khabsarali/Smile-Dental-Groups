@@ -15,7 +15,7 @@ function generateKeyframes(): KeyframeInfo[] {
     { id: 1, folder: 'scene-1', total: 300, keyframeCount: 35 },
     { id: 2, folder: 'scene-2', total: 299, keyframeCount: 35 },
     { id: 3, folder: 'scene-3', total: 300, keyframeCount: 35 },
-    { id: 4, folder: 'scene-4', total: 282, keyframeCount: 35 }, // up to image 282 for final smile
+    { id: 4, folder: 'scene-4', total: 282, keyframeCount: 35 },
   ];
 
   const keyframes: KeyframeInfo[] = [];
@@ -23,7 +23,6 @@ function generateKeyframes(): KeyframeInfo[] {
 
   for (const scene of scenes) {
     for (let i = 0; i < scene.keyframeCount; i++) {
-      // Eased sampling: ensures smooth camera movement and jaw rotation
       const progress = i / (scene.keyframeCount - 1);
       const frameNumber = Math.min(scene.total, Math.max(1, Math.round(1 + progress * (scene.total - 1))));
       const frameStr = String(frameNumber).padStart(3, '0');
@@ -43,12 +42,11 @@ function generateKeyframes(): KeyframeInfo[] {
 
 export const OPTIMIZED_KEYFRAMES: KeyframeInfo[] = generateKeyframes();
 export const TOTAL_KEYFRAMES = OPTIMIZED_KEYFRAMES.length; // Exactly 140 keyframes
-const INITIAL_PRELOAD_COUNT = 5;
 const STREAMING_BUFFER_WINDOW = 12;
 
 export function useImagePreloader() {
-  const [loadedCount, setLoadedCount] = useState<number>(0);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [loadedCount, setLoadedCount] = useState<number>(1);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true); // Immediate instant load
   const cacheRef = useRef<Map<string, FrameAsset>>(new Map());
   const loadingQueueRef = useRef<Set<string>>(new Set());
 
@@ -74,6 +72,7 @@ export function useImagePreloader() {
         const bitmap = await createImageBitmap(blob);
         cacheRef.current.set(path, bitmap);
         loadingQueueRef.current.delete(path);
+        setLoadedCount((c) => c + 1);
         return bitmap;
       } else {
         const img = new Image();
@@ -83,6 +82,7 @@ export function useImagePreloader() {
         }
         cacheRef.current.set(path, img);
         loadingQueueRef.current.delete(path);
+        setLoadedCount((c) => c + 1);
         return img;
       }
     } catch {
@@ -92,6 +92,7 @@ export function useImagePreloader() {
         img.onload = () => {
           cacheRef.current.set(path, img);
           loadingQueueRef.current.delete(path);
+          setLoadedCount((c) => c + 1);
           resolve(img);
         };
         img.onerror = () => {
@@ -102,36 +103,22 @@ export function useImagePreloader() {
     }
   }, []);
 
-  // Initial Preload of only first 5 keyframes for ultra-fast TTI (< 0.15s)
+  // Background Stream on mount without blocking the UI
   useEffect(() => {
     let isMounted = true;
-    let completed = 0;
 
-    const preloadInitial = async () => {
-      const promises: Promise<void>[] = [];
+    const streamInitial = async () => {
+      // First load frame 0 immediately
+      await loadSingleFrame(0);
 
-      for (let i = 0; i < INITIAL_PRELOAD_COUNT; i++) {
-        const p = loadSingleFrame(i).then(() => {
-          if (!isMounted) return;
-          completed++;
-          setLoadedCount(completed);
-          if (completed >= INITIAL_PRELOAD_COUNT) {
-            setIsLoaded(true);
-          }
-        });
-        promises.push(p);
-      }
-
-      await Promise.all(promises);
-
-      // Stream initial 25 keyframes in the background without blocking
-      for (let i = INITIAL_PRELOAD_COUNT; i < Math.min(25, TOTAL_KEYFRAMES); i++) {
+      // Then stream next 20 frames in background
+      for (let i = 1; i < Math.min(20, TOTAL_KEYFRAMES); i++) {
         if (!isMounted) break;
-        await loadSingleFrame(i);
+        loadSingleFrame(i);
       }
     };
 
-    preloadInitial();
+    streamInitial();
 
     return () => {
       isMounted = false;
@@ -158,13 +145,11 @@ export function useImagePreloader() {
     return cacheRef.current.get(path) || null;
   }, []);
 
-  const progress = Math.min(Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100), 100);
-
   return {
     loadedCount,
     totalCount: TOTAL_KEYFRAMES, // 140
-    progress,
-    isLoaded,
+    progress: 100,
+    isLoaded: true,
     ensureFrameLoaded,
     getCachedFrame,
   };
