@@ -39,7 +39,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     };
   }, []);
 
-  // Anti-Gravity 60 FPS Canvas Render Loop across all 284 frames
+  // Anti-Gravity 60 FPS Canvas Render Loop with COVER scaling & cinematic transitions
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -77,7 +77,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         width * 0.1,
         width / 2,
         height / 2,
-        width * 0.75
+        width * 0.8
       );
       bgGrad.addColorStop(0, '#0F172A');
       bgGrad.addColorStop(0.5, '#080E1A');
@@ -105,7 +105,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         const naturalH = 'naturalHeight' in img1 ? img1.naturalHeight : (img1 as ImageBitmap).height;
 
         if (naturalW > 0) {
-          // Responsive Object-Fit: Contain (Preserves full jaw visibility, no cropping or stretching)
+          // COVER SCALING: Covers the whole canvas wall-to-wall without empty margins
           const imgAspect = naturalW / naturalH;
           const screenAspect = width / height;
 
@@ -113,11 +113,11 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           let renderH = height;
 
           if (screenAspect > imgAspect) {
-            renderH = height;
-            renderW = height * imgAspect;
-          } else {
             renderW = width;
             renderH = width / imgAspect;
+          } else {
+            renderH = height;
+            renderW = height * imgAspect;
           }
 
           // Anti-Gravity Sinusoidal Floating Oscillation (Levitating suspended in 3D air)
@@ -135,19 +135,19 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             renderW * 0.08,
             width / 2,
             offsetY + renderH * 0.55,
-            renderW * 0.4
+            renderW * 0.45
           );
-          auraGrad.addColorStop(0, 'rgba(2, 132, 199, 0.22)');
-          auraGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.08)');
+          auraGrad.addColorStop(0, 'rgba(2, 132, 199, 0.25)');
+          auraGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.09)');
           auraGrad.addColorStop(1, 'rgba(5, 8, 14, 0)');
           ctx.fillStyle = auraGrad;
           ctx.fillRect(0, 0, width, height);
 
-          // 4. Draw Primary Levitating 3D Frame
+          // 4. Draw Primary Base Frame
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // 5. Sub-Frame Alpha Crossfading for 60 FPS Cinematic Continuity
+          // 5. Cinematic Smooth Sub-Frame Crossfade Transition to Next Frame
           if (img2 && blendAlpha > 0.001) {
             ctx.globalAlpha = blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
