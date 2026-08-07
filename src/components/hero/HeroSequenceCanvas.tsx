@@ -50,7 +50,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       const height = window.innerHeight;
       const isMobile = width < 768;
       const isDesktop = width >= 1024;
-      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
+      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
 
       if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
         canvas.width = Math.round(width * dpr);
@@ -60,7 +60,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = isMobile ? 'medium' : 'high';
+      ctx.imageSmoothingQuality = 'high';
 
       // Pure white clinical background color fill
       ctx.fillStyle = '#FFFFFF';

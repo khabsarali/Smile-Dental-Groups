@@ -14,6 +14,12 @@ import { HeroOverlayText } from './components/hero/HeroOverlayText';
 import { StageIndicator } from './components/hero/StageIndicator';
 import { Footer } from './components/sections/Footer';
 
+import { BeforeAfterSlider } from './components/sections/BeforeAfterSlider';
+import { AboutClinic } from './components/sections/AboutClinic';
+import { WhyChooseUs } from './components/sections/WhyChooseUs';
+import { FAQSection } from './components/sections/FAQSection';
+import { ContactSection } from './components/sections/ContactSection';
+
 import { AboutPage } from './pages/AboutPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { GalleryPage } from './pages/GalleryPage';
@@ -110,7 +116,7 @@ export function App() {
       {/* Page Routing */}
       {currentPage === 'home' && (
         <>
-          {/* Fixed Full-Screen Global 3D Background Canvas Layer (Jaw on Right 65%) */}
+          {/* Fixed Full-Screen Global 3D Background Canvas Layer */}
           <HeroSequenceCanvas
             images={images}
             scrollProgress={globalScrollProgress}
@@ -124,7 +130,7 @@ export function App() {
           {/* Fixed Side Rail Stage Indicator */}
           <StageIndicator currentStage={currentStage} progress={globalScrollProgress} />
 
-          {/* Ultra-Minimal Homepage Hero Viewport */}
+          {/* 3D Keynote Interactive Scroll Viewport */}
           <div id="hero-container" className="relative w-full h-[500vh] z-20">
             <div className="sticky top-0 left-0 w-full h-screen">
               <HeroOverlayText
@@ -134,6 +140,24 @@ export function App() {
               />
             </div>
           </div>
+
+          {/* Post-Animation Homepage Sections Flow */}
+          <main className="relative z-20 bg-white/90 backdrop-blur-xl border-t border-slate-200/60 shadow-2xl">
+            {/* 1. Before & After Gallery */}
+            <BeforeAfterSlider />
+
+            {/* 2. About the Clinic */}
+            <AboutClinic />
+
+            {/* 3. Why Choose Us */}
+            <WhyChooseUs />
+
+            {/* 4. Frequently Asked Questions */}
+            <FAQSection />
+
+            {/* 5. Contact Us & Appointment Reservation */}
+            <ContactSection />
+          </main>
         </>
       )}
 
