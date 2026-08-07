@@ -1,0 +1,10 @@
+{
+  "totalOriginalPngMB": "105.86 MB",
+  "totalWebpDesktopMB": "8.81 MB",
+  "totalWebpTabletMB": "7.22 MB",
+  "totalWebpMobileMB": "3.41 MB",
+  "desktopReductionPercent": "91.7%",
+  "mobileReductionPercent": "96.8%",
+  "avgFrameDesktopKB": "60.1 KB",
+  "avgFrameMobileKB": "23.3 KB"
+}

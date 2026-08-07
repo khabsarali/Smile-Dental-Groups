@@ -1,41 +1,25 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Scan, Zap, ShieldCheck, Smile, ChevronDown, Calendar, ArrowRight, Activity } from 'lucide-react';
-import { TOTAL_FRAMES, FRAME_MANIFEST, SCENES } from '../../engine/FrameManifest';
-import { FrameAsset } from '../../hooks/useImagePreloader';
+import { Sparkles, Smile, ChevronDown, Calendar, ArrowRight } from 'lucide-react';
+import { TOTAL_FRAMES, SCENES } from '../../engine/FrameManifest';
+import { FrameAsset, globalFrameLoader } from '../../engine/FrameLoader';
 
-interface Cinematic3DScrollProps {
-  ensureFrameLoaded: (index: number) => void;
-  getCachedFrame: (index: number) => FrameAsset | null;
-}
-
-export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
-  ensureFrameLoaded,
-  getCachedFrame,
-}) => {
+export const Cinematic3DScroll: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
 
-  // Mutable animation references (Zero React re-renders on scroll)
+  // Mutable animation references (Zero React re-renders on scroll movement)
   const targetScrollRef = useRef<number>(0);
   const currentInterpolatedScrollRef = useRef<number>(0);
+  const lastRenderedFloatFrameRef = useRef<number>(-1);
   const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Minimal UI state updated only when scene milestone changes
   const [activeSceneId, setActiveSceneId] = useState<number>(1);
   const [displayFrameIndex, setDisplayFrameIndex] = useState<number>(1);
   const [isFinalFrameReached, setIsFinalFrameReached] = useState<boolean>(false);
-
-  // Pre-instantiate initial frame 0 (frame-001.png) immediately on mount
-  useEffect(() => {
-    const initialImg = new Image();
-    initialImg.src = FRAME_MANIFEST[0].path;
-    initialImg.onload = () => {
-      lastDrawnFrameRef.current = initialImg;
-    };
-  }, []);
 
   // Window scroll listener updating mutable ref (Decoupled 60 FPS)
   useEffect(() => {
@@ -49,7 +33,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
       const progress = Math.max(0, Math.min(1, -rect.top / scrollableDist));
       targetScrollRef.current = progress;
 
-      // Update scene milestone only on integer boundaries (not on every pixel)
+      // Update scene milestone only on integer boundaries (not on every raw pixel)
       const currentFrameNum = Math.min(150, Math.max(1, Math.round(progress * 149) + 1));
       setDisplayFrameIndex(currentFrameNum);
 
@@ -114,7 +98,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
       }
 
       // Smooth scroll interpolation (Easing towards target scroll)
-      currentInterpolatedScrollRef.current += (targetScrollRef.current - currentInterpolatedScrollRef.current) * 0.16;
+      currentInterpolatedScrollRef.current += (targetScrollRef.current - currentInterpolatedScrollRef.current) * 0.18;
       const smoothProgress = currentInterpolatedScrollRef.current;
 
       const width = window.innerWidth;
@@ -154,11 +138,11 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
       const index2 = Math.min(TOTAL_FRAMES - 1, index1 + 1);
       const blendAlpha = floatFrame - index1;
 
-      // Stream upcoming lookahead frames in background ahead of scroll
-      ensureFrameLoaded(index1);
+      // Notify FrameLoader of current scroll progress to dynamically stream upcoming frames
+      globalFrameLoader.onScrollProgress(index1);
 
-      const img1 = getCachedFrame(index1) || lastDrawnFrameRef.current;
-      const img2 = getCachedFrame(index2) || img1;
+      const img1 = globalFrameLoader.getCachedFrame(index1) || lastDrawnFrameRef.current;
+      const img2 = globalFrameLoader.getCachedFrame(index2) || img1;
 
       if (img1) {
         lastDrawnFrameRef.current = img1;
@@ -245,6 +229,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
       }
 
       ctx.restore();
+      lastRenderedFloatFrameRef.current = floatFrame;
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -253,7 +238,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [activeSceneId, ensureFrameLoaded, getCachedFrame]);
+  }, [activeSceneId]);
 
   const activeScene = SCENES[activeSceneId - 1] || SCENES[0];
 
@@ -293,7 +278,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
           </div>
         </header>
 
-        {/* Floating Minimal Cinematic HUD Badges (Positioned gracefully away from the jaw) */}
+        {/* Floating Minimal Cinematic HUD Badges */}
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-6 sm:p-10 pt-24 pb-12">
           {/* Top Title Overlay */}
           <div className="max-w-xl">
@@ -388,7 +373,7 @@ export const Cinematic3DScroll: React.FC<Cinematic3DScrollProps> = ({
                   Experience precision cosmetic dentistry, porcelain restorations, and painless orthodontic care.
                 </p>
                 <button
-                  onClick={() => alert('Booking consultation demo initiated.')}
+                  onClick={() => alert('Consultation demo initialized.')}
                   className="glass-button w-full py-3 px-5 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold text-white shadow-lg cursor-pointer"
                 >
                   <Calendar className="w-4 h-4" />

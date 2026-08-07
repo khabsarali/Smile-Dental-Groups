@@ -11,8 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     
-    <!-- High-Priority Preload for Frame 001 -->
-    <link rel="preload" as="image" href="/assets/optimized-150/frame-001.png" fetchpriority="high" />
+    <!-- High-Priority Preloads for Instant First Paint (< 0.1s) -->
+    <link rel="preload" as="image" href="/assets/webp/frame-001-preview.webp" fetchpriority="high" type="image/webp" />
+    <link rel="preload" as="image" href="/assets/webp/desktop/frame-001.webp" fetchpriority="high" type="image/webp" media="(min-width: 1280px)" />
+    <link rel="preload" as="image" href="/assets/webp/tablet/frame-001.webp" fetchpriority="high" type="image/webp" media="(min-width: 768px) and (max-width: 1279px)" />
+    <link rel="preload" as="image" href="/assets/webp/mobile/frame-001.webp" fetchpriority="high" type="image/webp" media="(max-width: 767px)" />
   </head>
   <body class="bg-[#05080E] text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-[#0284C7] selection:text-white">
     <div id="root"></div>

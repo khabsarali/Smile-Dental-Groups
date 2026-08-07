@@ -1,17 +1,20 @@
 /**
- * Home of Smiles Dental - 150 High-Quality Keyframe Manifest
- * Maps global scroll indices 0..149 to sequential scene frames.
+ * Home of Smiles Dental - 150 High-Performance WebP Frame Manifest
+ * Multi-resolution tiers: Desktop (1920px), Tablet (1280px), Mobile (768px), and Instant Preview (480px).
  */
 
 export interface FrameManifestEntry {
   globalIndex: number; // 0 to 149
   frameNumber: number; // 1 to 150
   frameStr: string;    // "001" to "150"
-  path: string;        // "/assets/optimized-150/frame-001.png"
+  desktopPath: string; // "/assets/webp/desktop/frame-001.webp"
+  tabletPath: string;  // "/assets/webp/tablet/frame-001.webp"
+  mobilePath: string;  // "/assets/webp/mobile/frame-001.webp"
   sceneId: number;     // 1 to 5
 }
 
 export const TOTAL_FRAMES = 150;
+export const PREVIEW_POSTER_PATH = '/assets/webp/frame-001-preview.webp';
 
 export interface SceneDefinition {
   id: number;
@@ -90,7 +93,9 @@ function build150Manifest(): FrameManifestEntry[] {
       globalIndex: i,
       frameNumber,
       frameStr,
-      path: `/assets/optimized-150/frame-${frameStr}.png`,
+      desktopPath: `/assets/webp/desktop/frame-${frameStr}.webp`,
+      tabletPath: `/assets/webp/tablet/frame-${frameStr}.webp`,
+      mobilePath: `/assets/webp/mobile/frame-${frameStr}.webp`,
       sceneId,
     };
   }
@@ -99,3 +104,15 @@ function build150Manifest(): FrameManifestEntry[] {
 }
 
 export const FRAME_MANIFEST: FrameManifestEntry[] = build150Manifest();
+
+export function getResolutionTierPath(index: number): string {
+  const entry = FRAME_MANIFEST[index];
+  if (!entry) return '';
+
+  if (typeof window === 'undefined') return entry.desktopPath;
+
+  const w = window.innerWidth;
+  if (w < 768) return entry.mobilePath;
+  if (w < 1280) return entry.tabletPath;
+  return entry.desktopPath;
+}
