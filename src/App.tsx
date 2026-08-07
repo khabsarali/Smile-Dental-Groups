@@ -91,7 +91,7 @@ export function App() {
     <div
       id="global-page-container"
       ref={pageContainerRef}
-      className="relative min-h-screen bg-transparent text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
+      className="relative min-h-screen bg-white text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
     >
       {/* High-Tech Preloader */}
       <Preloader

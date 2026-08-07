@@ -62,8 +62,8 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = isMobile ? 'medium' : 'high';
 
-      // Studio background color fill
-      ctx.fillStyle = '#05080E';
+      // Pure white clinical background color fill
+      ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, width, height);
 
       // Frame calculation
@@ -211,7 +211,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   }, [scrollProgress, currentStage, images, ensureFrameLoaded]);
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080E]">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-white">
       <canvas
         ref={canvasRef}
         className="w-full h-full block select-none"
