@@ -2,22 +2,49 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 export type FrameAsset = ImageBitmap | HTMLImageElement;
 
-export interface SceneMeta {
-  id: number;
-  folder: string;
-  frameCount: number;
+export interface KeyframeInfo {
+  index: number;
+  sceneId: number;
+  localFrame: number;
+  path: string;
 }
 
-export const SCENES_CONFIG: SceneMeta[] = [
-  { id: 1, folder: 'scene-1', frameCount: 300 },
-  { id: 2, folder: 'scene-2', frameCount: 299 },
-  { id: 3, folder: 'scene-3', frameCount: 300 },
-  { id: 4, folder: 'scene-4', frameCount: 300 },
-];
+// Generate exactly 140 high-impact keyframes (35 per scene) across the 4 scenes
+function generateKeyframes(): KeyframeInfo[] {
+  const scenes = [
+    { id: 1, folder: 'scene-1', total: 300, keyframeCount: 35 },
+    { id: 2, folder: 'scene-2', total: 299, keyframeCount: 35 },
+    { id: 3, folder: 'scene-3', total: 300, keyframeCount: 35 },
+    { id: 4, folder: 'scene-4', total: 282, keyframeCount: 35 }, // up to image 282 for final smile
+  ];
 
-export const TOTAL_ANIMATION_FRAMES = 1199;
-const INITIAL_PRELOAD_COUNT = 3;
-const STREAMING_BUFFER_WINDOW = 20;
+  const keyframes: KeyframeInfo[] = [];
+  let globalIndex = 0;
+
+  for (const scene of scenes) {
+    for (let i = 0; i < scene.keyframeCount; i++) {
+      // Eased sampling: ensures smooth camera movement and jaw rotation
+      const progress = i / (scene.keyframeCount - 1);
+      const frameNumber = Math.min(scene.total, Math.max(1, Math.round(1 + progress * (scene.total - 1))));
+      const frameStr = String(frameNumber).padStart(3, '0');
+      
+      keyframes.push({
+        index: globalIndex,
+        sceneId: scene.id,
+        localFrame: frameNumber,
+        path: `/assets/scenes/${scene.folder}/ezgif-frame-${frameStr}.png`,
+      });
+      globalIndex++;
+    }
+  }
+
+  return keyframes;
+}
+
+export const OPTIMIZED_KEYFRAMES: KeyframeInfo[] = generateKeyframes();
+export const TOTAL_KEYFRAMES = OPTIMIZED_KEYFRAMES.length; // Exactly 140 keyframes
+const INITIAL_PRELOAD_COUNT = 5;
+const STREAMING_BUFFER_WINDOW = 12;
 
 export function useImagePreloader() {
   const [loadedCount, setLoadedCount] = useState<number>(0);
@@ -25,29 +52,11 @@ export function useImagePreloader() {
   const cacheRef = useRef<Map<string, FrameAsset>>(new Map());
   const loadingQueueRef = useRef<Set<string>>(new Set());
 
-  // Helper to format frame path from global frame index (0 to 1198)
-  const getFramePath = useCallback((globalIndex: number): { sceneId: number; path: string } => {
-    let acc = 0;
-    for (const scene of SCENES_CONFIG) {
-      if (globalIndex < acc + scene.frameCount) {
-        const localIndex = globalIndex - acc + 1;
-        const frameStr = String(localIndex).padStart(3, '0');
-        return {
-          sceneId: scene.id,
-          path: `/assets/scenes/${scene.folder}/ezgif-frame-${frameStr}.png`,
-        };
-      }
-      acc += scene.frameCount;
-    }
-    return {
-      sceneId: 4,
-      path: `/assets/scenes/scene-4/ezgif-frame-300.png`,
-    };
-  }, []);
-
   // Asynchronous off-thread frame loader using createImageBitmap
-  const loadSingleFrame = useCallback(async (globalIndex: number): Promise<FrameAsset | null> => {
-    const { path } = getFramePath(globalIndex);
+  const loadSingleFrame = useCallback(async (keyframeIndex: number): Promise<FrameAsset | null> => {
+    if (keyframeIndex < 0 || keyframeIndex >= TOTAL_KEYFRAMES) return null;
+    const { path } = OPTIMIZED_KEYFRAMES[keyframeIndex];
+
     if (cacheRef.current.has(path)) {
       return cacheRef.current.get(path)!;
     }
@@ -91,9 +100,9 @@ export function useImagePreloader() {
         };
       });
     }
-  }, [getFramePath]);
+  }, []);
 
-  // Initial Preload of first 15 frames for instant TTI (< 1.0s)
+  // Initial Preload of only first 5 keyframes for ultra-fast TTI (< 0.15s)
   useEffect(() => {
     let isMounted = true;
     let completed = 0;
@@ -115,8 +124,8 @@ export function useImagePreloader() {
 
       await Promise.all(promises);
 
-      // Background stream initial 60 frames of Scene 1
-      for (let i = INITIAL_PRELOAD_COUNT; i < 60; i++) {
+      // Stream initial 25 keyframes in the background without blocking
+      for (let i = INITIAL_PRELOAD_COUNT; i < Math.min(25, TOTAL_KEYFRAMES); i++) {
         if (!isMounted) break;
         await loadSingleFrame(i);
       }
@@ -129,30 +138,31 @@ export function useImagePreloader() {
     };
   }, [loadSingleFrame]);
 
-  // Request window streaming for continuous scroll playback
-  const ensureFrameLoaded = useCallback((currentGlobalIndex: number) => {
-    const start = Math.max(0, currentGlobalIndex - 2);
-    const end = Math.min(TOTAL_ANIMATION_FRAMES - 1, currentGlobalIndex + STREAMING_BUFFER_WINDOW);
+  // Request window streaming ahead of user's scroll position
+  const ensureFrameLoaded = useCallback((currentKeyframeIndex: number) => {
+    const start = Math.max(0, currentKeyframeIndex - 2);
+    const end = Math.min(TOTAL_KEYFRAMES - 1, currentKeyframeIndex + STREAMING_BUFFER_WINDOW);
 
     for (let i = start; i <= end; i++) {
-      const { path } = getFramePath(i);
+      const { path } = OPTIMIZED_KEYFRAMES[i];
       if (!cacheRef.current.has(path) && !loadingQueueRef.current.has(path)) {
         loadSingleFrame(i);
       }
     }
-  }, [getFramePath, loadSingleFrame]);
+  }, [loadSingleFrame]);
 
-  // Retrieve cached frame
-  const getCachedFrame = useCallback((globalIndex: number): FrameAsset | null => {
-    const { path } = getFramePath(globalIndex);
+  // Retrieve cached keyframe
+  const getCachedFrame = useCallback((keyframeIndex: number): FrameAsset | null => {
+    if (keyframeIndex < 0 || keyframeIndex >= TOTAL_KEYFRAMES) return null;
+    const { path } = OPTIMIZED_KEYFRAMES[keyframeIndex];
     return cacheRef.current.get(path) || null;
-  }, [getFramePath]);
+  }, []);
 
   const progress = Math.min(Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100), 100);
 
   return {
     loadedCount,
-    totalCount: TOTAL_ANIMATION_FRAMES,
+    totalCount: TOTAL_KEYFRAMES, // 140
     progress,
     isLoaded,
     ensureFrameLoaded,

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { FrameAsset, TOTAL_ANIMATION_FRAMES } from '../../hooks/useImagePreloader';
+import { FrameAsset, TOTAL_KEYFRAMES } from '../../hooks/useImagePreloader';
 
 interface HeroSequenceCanvasProps {
   scrollProgress: number;
@@ -75,13 +75,13 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Anti-Gravity Frame Calculation across 1199 frames
-      const floatFrame = Math.max(0, Math.min(TOTAL_ANIMATION_FRAMES - 1, scrollProgress * (TOTAL_ANIMATION_FRAMES - 1)));
+      // 2. Optimized Keyframe Calculation across exactly 140 selected keyframes
+      const floatFrame = Math.max(0, Math.min(TOTAL_KEYFRAMES - 1, scrollProgress * (TOTAL_KEYFRAMES - 1)));
       const index1 = Math.floor(floatFrame);
-      const index2 = Math.min(TOTAL_ANIMATION_FRAMES - 1, index1 + 1);
+      const index2 = Math.min(TOTAL_KEYFRAMES - 1, index1 + 1);
       const blendAlpha = floatFrame - index1;
 
-      // Stream next frames in background
+      // Stream upcoming keyframes in background ahead of scroll
       if (ensureFrameLoaded) {
         ensureFrameLoaded(index1);
       }
