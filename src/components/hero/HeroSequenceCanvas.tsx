@@ -89,7 +89,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           const imgAspect = naturalW / naturalH;
           const screenAspect = width / height;
 
-          // Full-Screen Cover Scaling Mode across the entire background
+          // Full-Screen Cover Scaling Mode across the background
           let renderW = width;
           let renderH = height;
 
@@ -108,16 +108,9 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           let offsetX = (width - renderW) / 2;
           let offsetY = (height - renderH) / 2 + floatY;
 
-          // On Desktop (1024px+), shift jaw horizontally opposite to text alignment for 100% jaw visibility!
+          // Position 3D jaw animation strictly on the RIGHT 65% of viewport width on Desktop
           if (isDesktop) {
-            const isRightText = currentStage % 2 === 0;
-            if (isRightText) {
-              // Text is on the RIGHT -> Shift jaw to the LEFT
-              offsetX -= renderW * 0.12;
-            } else {
-              // Text is on the LEFT -> Shift jaw to the RIGHT
-              offsetX += renderW * 0.12;
-            }
+            offsetX += renderW * 0.18;
           }
 
           // 1. Draw Soft Radial Ground Shadow beneath Floating Jaw

@@ -12,20 +12,20 @@ import { HeroSequenceCanvas } from './components/hero/HeroSequenceCanvas';
 import { ThreeBackground } from './components/hero/ThreeBackground';
 import { HeroOverlayText } from './components/hero/HeroOverlayText';
 import { StageIndicator } from './components/hero/StageIndicator';
-
-import { AboutClinic } from './components/sections/AboutClinic';
-import { Treatments } from './components/sections/Treatments';
-import { BeforeAfterSlider } from './components/sections/BeforeAfterSlider';
-import { TreatmentTimeline } from './components/sections/TreatmentTimeline';
-import { MeetDentist } from './components/sections/MeetDentist';
-import { Testimonials } from './components/sections/Testimonials';
-import { AppointmentBooking } from './components/sections/AppointmentBooking';
 import { Footer } from './components/sections/Footer';
+
+import { AboutPage } from './pages/AboutPage';
+import { ServicesPage } from './pages/ServicesPage';
+import { GalleryPage } from './pages/GalleryPage';
+import { AppointmentPage } from './pages/AppointmentPage';
 
 gsap.registerPlugin(ScrollTrigger);
 
+export type PageId = 'home' | 'about' | 'services' | 'gallery' | 'appointment';
+
 export function App() {
   const { images, loadedCount, totalCount, progress, isLoaded, ensureFrameLoaded } = useImagePreloader();
+  const [currentPage, setCurrentPage] = useState<PageId>('home');
   const [currentStage, setCurrentStage] = useState<number>(1);
   const [globalScrollProgress, setGlobalScrollProgress] = useState<number>(0);
   const pageContainerRef = useRef<HTMLDivElement>(null);
@@ -80,7 +80,12 @@ export function App() {
     return () => {
       trigger.kill();
     };
-  }, []);
+  }, [currentPage]);
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page as PageId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div
@@ -100,41 +105,46 @@ export function App() {
       <CustomCursor />
 
       {/* Global Header Navbar */}
-      <Navbar />
+      <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
 
-      {/* Fixed Full-Screen Global 3D Background Canvas Layer */}
-      <HeroSequenceCanvas
-        images={images}
-        scrollProgress={globalScrollProgress}
-        currentStage={currentStage}
-        ensureFrameLoaded={ensureFrameLoaded}
-      />
+      {/* Page Routing */}
+      {currentPage === 'home' && (
+        <>
+          {/* Fixed Full-Screen Global 3D Background Canvas Layer (Jaw on Right 65%) */}
+          <HeroSequenceCanvas
+            images={images}
+            scrollProgress={globalScrollProgress}
+            currentStage={currentStage}
+            ensureFrameLoaded={ensureFrameLoaded}
+          />
 
-      {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
-      <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
+          {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
+          <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
 
-      {/* Fixed Side Rail Stage Indicator */}
-      <StageIndicator currentStage={currentStage} progress={globalScrollProgress} />
+          {/* Fixed Side Rail Stage Indicator */}
+          <StageIndicator currentStage={currentStage} progress={globalScrollProgress} />
 
-      {/* Hero Overview Viewport Section */}
-      <div id="hero-container" className="relative w-full min-h-screen z-20">
-        <HeroOverlayText stage={currentStage} progress={globalScrollProgress} />
-      </div>
+          {/* Ultra-Minimal Homepage Hero Viewport */}
+          <div id="hero-container" className="relative w-full h-[500vh] z-20">
+            <div className="sticky top-0 left-0 w-full h-screen">
+              <HeroOverlayText
+                stage={currentStage}
+                progress={globalScrollProgress}
+                onNavigate={handleNavigate}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
-      {/* Translucent Content Sections Overlaying 3D Background */}
-      <main className="relative z-20">
-        <AboutClinic />
-        <Treatments />
-        <BeforeAfterSlider />
-        <TreatmentTimeline />
-        <MeetDentist />
-        <Testimonials />
-        <AppointmentBooking />
-      </main>
+      {currentPage === 'about' && <AboutPage />}
+      {currentPage === 'services' && <ServicesPage />}
+      {currentPage === 'gallery' && <GalleryPage />}
+      {currentPage === 'appointment' && <AppointmentPage />}
 
-      {/* Luxury Footer */}
+      {/* Luxury Footer Navigation Hub */}
       <div className="relative z-20">
-        <Footer />
+        <Footer onNavigate={handleNavigate} />
       </div>
     </div>
   );
