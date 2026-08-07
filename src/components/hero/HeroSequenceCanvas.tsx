@@ -18,8 +18,15 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
+  const targetScrollRef = useRef<number>(0);
+  const currentInterpolatedScrollRef = useRef<number>(0);
 
-  // Pre-instantiate initial frame 0 (ezgif-frame-001) immediately on mount
+  // Sync scroll progress without causing React re-renders
+  useEffect(() => {
+    targetScrollRef.current = scrollProgress;
+  }, [scrollProgress]);
+
+  // Pre-instantiate initial frame 0 (frame-001.png) immediately on mount
   useEffect(() => {
     const initialImg = new Image();
     initialImg.src = FRAME_MANIFEST[0].path;
@@ -39,7 +46,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     };
   }, []);
 
-  // Anti-Gravity 60 FPS Canvas Render Loop with COVER scaling & cinematic transitions
+  // Anti-Gravity 60 FPS Canvas Render Loop with COVER scaling & smooth background persistence
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -55,10 +62,15 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         return;
       }
 
+      // Smooth scroll interpolation (Decoupled from raw scroll events for 60 FPS continuity)
+      currentInterpolatedScrollRef.current += (targetScrollRef.current - currentInterpolatedScrollRef.current) * 0.18;
+      const smoothProgress = currentInterpolatedScrollRef.current;
+
       const width = window.innerWidth;
       const height = window.innerHeight;
       const isMobile = width < 768;
-      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
+      const isTablet = width >= 768 && width < 1280;
+      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 1.25 : isTablet ? 1.5 : 2.0);
 
       if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
         canvas.width = Math.round(width * dpr);
@@ -85,8 +97,8 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Exact 284 Frame Timeline Calculation
-      const floatFrame = Math.max(0, Math.min(TOTAL_FRAMES - 1, scrollProgress * (TOTAL_FRAMES - 1)));
+      // 2. Exact 150 Frame Timeline Calculation with Smooth Sub-Frame Blending
+      const floatFrame = Math.max(0, Math.min(TOTAL_FRAMES - 1, smoothProgress * (TOTAL_FRAMES - 1)));
       const index1 = Math.floor(floatFrame);
       const index2 = Math.min(TOTAL_FRAMES - 1, index1 + 1);
       const blendAlpha = floatFrame - index1;
@@ -128,7 +140,11 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           const offsetX = (width - renderW) / 2 + floatX;
           const offsetY = (height - renderH) / 2 + floatY;
 
-          // 3. Volumetric Soft Blue Aura beneath Anti-Gravity Jaw
+          // 3. Persistent Background Opacity Transition (Softer when content is scrolled over it)
+          const contentScrollFactor = Math.max(0, Math.min(1, (smoothProgress - 0.95) * 10));
+          const masterAlpha = 1.0 - contentScrollFactor * 0.75; // Dims to 25% opacity behind content cards
+
+          // 4. Volumetric Soft Blue Aura beneath Anti-Gravity Jaw
           const auraGrad = ctx.createRadialGradient(
             width / 2,
             offsetY + renderH * 0.55,
@@ -143,22 +159,22 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           ctx.fillStyle = auraGrad;
           ctx.fillRect(0, 0, width, height);
 
-          // 4. Draw Primary Base Frame
-          ctx.globalAlpha = 1.0;
+          // 5. Draw Primary Base Frame
+          ctx.globalAlpha = masterAlpha;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // 5. Cinematic Smooth Sub-Frame Crossfade Transition to Next Frame
+          // 6. Cinematic Smooth Sub-Frame Crossfade Transition to Next Frame
           if (img2 && blendAlpha > 0.001) {
-            ctx.globalAlpha = blendAlpha;
+            ctx.globalAlpha = masterAlpha * blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
           }
 
-          // 6. Cinematic Stage Lighting & Specular Enamel Sweeps
-          ctx.globalAlpha = 1.0;
+          // 7. Cinematic Stage Lighting & Specular Enamel Sweeps
+          ctx.globalAlpha = masterAlpha;
 
           if (currentStage === 2) {
             // Scene 02: Digital 3D Holographic CBCT Scan Line
-            const scanY = (scrollProgress % 0.25) * 4 * height;
+            const scanY = (smoothProgress % 0.25) * 4 * height;
             const scanGrad = ctx.createLinearGradient(0, scanY - 40, 0, scanY + 40);
             scanGrad.addColorStop(0, 'rgba(0, 163, 255, 0)');
             scanGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.3)');
@@ -171,7 +187,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             ctx.fillStyle = `rgba(2, 132, 199, ${pulse})`;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage >= 4) {
-            // Scene 04 & Final Living Background: Diamond Enamel Specular Glint Sweep
+            // Scene 04, 05, 06: Diamond Enamel Specular Glint Sweep
             const sweepX = (now * 0.35) % (width * 2.2) - width * 0.2;
             const glintGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 140, height);
             glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
@@ -192,7 +208,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [scrollProgress, currentStage, ensureFrameLoaded, getCachedFrame]);
+  }, [currentStage, ensureFrameLoaded, getCachedFrame]);
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080E]">
