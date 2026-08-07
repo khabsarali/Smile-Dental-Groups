@@ -17,6 +17,7 @@ import { Treatments } from './components/sections/Treatments';
 import { WhyChooseUs } from './components/sections/WhyChooseUs';
 import { AboutClinic } from './components/sections/AboutClinic';
 import { OurTeam } from './components/sections/OurTeam';
+import { BeforeAfterSlider } from './components/sections/BeforeAfterSlider';
 import { TreatmentTimeline } from './components/sections/TreatmentTimeline';
 import { ReviewsSection } from './components/sections/ReviewsSection';
 import { FAQSection } from './components/sections/FAQSection';
@@ -99,7 +100,7 @@ export function App() {
     <div
       id="global-page-container"
       ref={pageContainerRef}
-      className="relative min-h-screen bg-white text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
+      className="relative min-h-screen bg-[#05080E] text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
     >
       {/* SECTION 1: High-Tech Preloader */}
       <Preloader
@@ -118,7 +119,7 @@ export function App() {
       {/* Page Routing */}
       {currentPage === 'home' && (
         <>
-          {/* SECTION 2: Fixed Fullscreen 3D Story Canvas (1199 Master Frames) */}
+          {/* SECTION 2: Fixed Fullscreen Anti-Gravity 3D Story Canvas (1199 Master Frames) */}
           <HeroSequenceCanvas
             scrollProgress={globalScrollProgress}
             currentStage={currentStage}
@@ -129,36 +130,39 @@ export function App() {
           {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
           <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
 
-          {/* Clean 3D Scroll Journey Viewport (100% Unobstructed 3D Animation) */}
+          {/* Clean 3D Scroll Journey Viewport (100% Unobstructed Anti-Gravity Animation) */}
           <div id="hero-container" className="relative w-full h-[500vh] z-20 pointer-events-none" />
 
           {/* Post-Animation Homepage Flow (Begins Immediately After Final Smile Reveal) */}
-          <main className="relative z-30 bg-white shadow-[0_-20px_50px_rgba(15,23,42,0.08)] transition-all duration-700">
+          <main className="relative z-30 bg-white shadow-[0_-20px_50px_rgba(15,23,42,0.15)] transition-all duration-700">
             {/* SECTION 3: Welcome to Home of Smiles Dental */}
             <WelcomeSection onNavigate={handleNavigate} />
 
-            {/* SECTION 4: Comprehensive Services */}
+            {/* SECTION 4: Comprehensive Services (Implants, Veneers, Orthodontics, Emergency) */}
             <Treatments />
 
-            {/* SECTION 5: Why Choose Us */}
+            {/* SECTION 5: Why Choose Us & Modern Technology */}
             <WhyChooseUs />
 
-            {/* SECTION 6: About Us */}
+            {/* SECTION 6: About the Clinic */}
             <AboutClinic />
 
-            {/* SECTION 7: Our Team */}
+            {/* SECTION 7: Our Dental Specialists */}
             <OurTeam />
 
-            {/* SECTION 8: Treatment Journey Timeline */}
+            {/* SECTION 8: Before & After Results */}
+            <BeforeAfterSlider />
+
+            {/* SECTION 9: Treatment Journey Timeline */}
             <TreatmentTimeline />
 
-            {/* SECTION 9: 5-Star Google Reviews */}
+            {/* SECTION 10: 5-Star Patient Reviews & Testimonials */}
             <ReviewsSection />
 
-            {/* SECTION 10: Frequently Asked Questions */}
+            {/* SECTION 11: Frequently Asked Questions */}
             <FAQSection />
 
-            {/* SECTION 11 & 12: Book Appointment & Contact Us */}
+            {/* SECTION 12: Book an Appointment & Contact Information */}
             <ContactSection />
           </main>
         </>

@@ -18,7 +18,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
 
-  // Handle document tab visibility change (Pause canvas rendering when hidden)
+  // Tab visibility listener to pause render loop when tab is hidden
   useEffect(() => {
     const handleVisibilityChange = () => {
       isTabVisibleRef.current = !document.hidden;
@@ -29,7 +29,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     };
   }, []);
 
-  // Canvas drawing loop with sub-frame alpha crossfading & high resolution
+  // Anti-Gravity 60 FPS Canvas Render Loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !getCachedFrame) return;
@@ -45,7 +45,6 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         return;
       }
 
-      // Dynamic mobile vs desktop DPR calculation (Retina 4K sharpness)
       const width = window.innerWidth;
       const height = window.innerHeight;
       const isMobile = width < 768;
@@ -61,17 +60,28 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      // Pure white clinical background
-      ctx.fillStyle = '#FFFFFF';
+      // 1. Dark Luxury Studio Volumetric Background (#05080E with soft blue ambient glow)
+      const bgGrad = ctx.createRadialGradient(
+        width / 2,
+        height / 2,
+        width * 0.1,
+        width / 2,
+        height / 2,
+        width * 0.75
+      );
+      bgGrad.addColorStop(0, '#0F172A');
+      bgGrad.addColorStop(0.5, '#080E1A');
+      bgGrad.addColorStop(1, '#05080E');
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Multi-scene frame calculation across all 1199 master frames
+      // 2. Anti-Gravity Frame Calculation across 1199 frames
       const floatFrame = Math.max(0, Math.min(TOTAL_ANIMATION_FRAMES - 1, scrollProgress * (TOTAL_ANIMATION_FRAMES - 1)));
       const index1 = Math.floor(floatFrame);
       const index2 = Math.min(TOTAL_ANIMATION_FRAMES - 1, index1 + 1);
       const blendAlpha = floatFrame - index1;
 
-      // Stream upcoming buffer window
+      // Stream next frames in background
       if (ensureFrameLoaded) {
         ensureFrameLoaded(index1);
       }
@@ -88,7 +98,6 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           const imgAspect = naturalW / naturalH;
           const screenAspect = width / height;
 
-          // Contain / Cover scaling preserving 100% natural aspect ratio
           let renderW = width;
           let renderH = height;
 
@@ -100,46 +109,64 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             renderW = height * imgAspect;
           }
 
-          // Subtle floating suspension
-          const floatY = Math.sin(Date.now() * 0.0016) * 6;
-          const offsetX = (width - renderW) / 2;
+          // Anti-Gravity Sinusoidal Floating Oscillation (Levitating suspended in 3D air)
+          const now = Date.now();
+          const floatY = Math.sin(now * 0.0018) * 10;
+          const floatX = Math.cos(now * 0.0012) * 5;
+
+          const offsetX = (width - renderW) / 2 + floatX;
           const offsetY = (height - renderH) / 2 + floatY;
 
-          // 1. Draw Base Frame
+          // 3. Volumetric Soft Blue Aura beneath Anti-Gravity Jaw
+          const auraGrad = ctx.createRadialGradient(
+            width / 2,
+            offsetY + renderH * 0.55,
+            renderW * 0.08,
+            width / 2,
+            offsetY + renderH * 0.55,
+            renderW * 0.4
+          );
+          auraGrad.addColorStop(0, 'rgba(2, 132, 199, 0.22)');
+          auraGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.08)');
+          auraGrad.addColorStop(1, 'rgba(5, 8, 14, 0)');
+          ctx.fillStyle = auraGrad;
+          ctx.fillRect(0, 0, width, height);
+
+          // 4. Draw Primary Levitating 3D Frame
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // 2. Crossfade Blend Frame for liquid smooth 60 FPS transitions
+          // 5. Crossfade Frame for 60 FPS Liquid Motion
           if (img2 && blendAlpha > 0.001) {
             ctx.globalAlpha = blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
           }
 
-          // 3. Scene-specific Cinematic Lighting & Volumetric FX
+          // 6. Cinematic Glass Reflection & Specular Enamel Sweeps
           ctx.globalAlpha = 1.0;
 
           if (currentStage === 2) {
-            // Scene 02 Digital X-Ray Hologram Scan Line
+            // Scene 02: Digital 3D Holographic CBCT Scan Line
             const scanY = (scrollProgress % 0.25) * 4 * height;
-            const scanGradient = ctx.createLinearGradient(0, scanY - 60, 0, scanY + 60);
-            scanGradient.addColorStop(0, 'rgba(0, 163, 255, 0)');
-            scanGradient.addColorStop(0.5, 'rgba(0, 163, 255, 0.25)');
-            scanGradient.addColorStop(1, 'rgba(0, 163, 255, 0)');
-            ctx.fillStyle = scanGradient;
+            const scanGrad = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
+            scanGrad.addColorStop(0, 'rgba(0, 163, 255, 0)');
+            scanGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.35)');
+            scanGrad.addColorStop(1, 'rgba(0, 163, 255, 0)');
+            ctx.fillStyle = scanGrad;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage === 3) {
-            // Scene 03 Orthodontic & Laser Pulse
-            const laserPulse = Math.sin(Date.now() * 0.006) * 0.05 + 0.08;
-            ctx.fillStyle = `rgba(2, 132, 199, ${laserPulse})`;
+            // Scene 03: Orthodontic & Laser Glow Pulse
+            const pulse = (Math.sin(now * 0.007) + 1) * 0.08;
+            ctx.fillStyle = `rgba(2, 132, 199, ${pulse})`;
             ctx.fillRect(0, 0, width, height);
-          } else if (currentStage === 4 || currentStage === 5) {
-            // Scene 04 & 05 Diamond Enamel Specular Sweep
-            const sweepX = (Date.now() * 0.35) % (width * 2) - width;
-            const sweepGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 180, height);
-            sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            sweepGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
-            sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            ctx.fillStyle = sweepGrad;
+          } else if (currentStage >= 4) {
+            // Scene 04 & 05: Diamond Enamel Specular Glint Sweep
+            const sweepX = (now * 0.4) % (width * 2.2) - width * 0.2;
+            const glintGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 160, height);
+            glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            glintGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.28)');
+            glintGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = glintGrad;
             ctx.fillRect(0, 0, width, height);
           }
         }
@@ -157,7 +184,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   }, [scrollProgress, currentStage, ensureFrameLoaded, getCachedFrame]);
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-white">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080E]">
       <canvas
         ref={canvasRef}
         style={{ imageRendering: 'auto' }}
