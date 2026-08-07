@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -9,18 +9,27 @@ interface ThreeOverlayProps {
 
 // 3D Holographic Particle Field Component
 function ParticleField({ stage }: { stage: number }) {
-  const count = 300;
+  const [particleCount, setParticleCount] = useState<number>(300);
   const pointsRef = useRef<THREE.Points>(null);
 
+  useEffect(() => {
+    const updateCount = () => {
+      setParticleCount(window.innerWidth < 768 ? 100 : 300);
+    };
+    updateCount();
+    window.addEventListener('resize', updateCount, { passive: true });
+    return () => window.removeEventListener('resize', updateCount);
+  }, []);
+
   const [positions] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
+    const pos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 15;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 10;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
     }
     return [pos];
-  }, [count]);
+  }, [particleCount]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
@@ -98,7 +107,7 @@ export const ThreeBackground: React.FC<ThreeOverlayProps> = ({ stage, progress }
   return (
     <div className="absolute inset-0 pointer-events-none z-10">
       <Canvas
-        dpr={[1, 2.5]}
+        dpr={[1, 2.0]}
         camera={{ position: [0, 0, 5], fov: 60 }}
         gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       >

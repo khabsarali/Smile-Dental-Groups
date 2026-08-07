@@ -25,7 +25,7 @@ import { Footer } from './components/sections/Footer';
 gsap.registerPlugin(ScrollTrigger);
 
 export function App() {
-  const { images, loadedCount, totalCount, progress, isLoaded } = useImagePreloader();
+  const { images, loadedCount, totalCount, progress, isLoaded, ensureFrameLoaded } = useImagePreloader();
   const [currentStage, setCurrentStage] = useState<number>(1);
   const [heroProgress, setHeroProgress] = useState<number>(0);
 
@@ -57,7 +57,7 @@ export function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#05070A] text-slate-100 selection:bg-[#4FC3F7] selection:text-black">
+    <div className="relative min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-[#0284C7] selection:text-white">
       {/* High-Tech Cyber Preloader */}
       <Preloader
         progress={progress}
@@ -75,7 +75,11 @@ export function App() {
       {/* Hero Section Container */}
       <div className="relative w-full">
         {/* Scroll-Driven Master Canvas Sequence */}
-        <HeroSequenceCanvas images={images} onStageChange={handleStageChange} />
+        <HeroSequenceCanvas
+          images={images}
+          onStageChange={handleStageChange}
+          ensureFrameLoaded={ensureFrameLoaded}
+        />
 
         {/* R3F 3D Laser & Particle Overlay */}
         <ThreeBackground stage={currentStage} progress={heroProgress} />
