@@ -1,57 +1,57 @@
 import React from 'react';
-import { Cpu, ShieldCheck, Sparkles, Clock, Award, HeartHandshake } from 'lucide-react';
+import { Cpu, ShieldCheck, Sparkles, Clock, Award, Star, HeartHandshake, Smile } from 'lucide-react';
 import { soundFX } from '../../ui/SoundEffects';
 
 export const WhyChooseUs: React.FC = () => {
   const advantages = [
     {
-      icon: <Cpu className="w-6 h-6 text-[#0284C7]" />,
-      title: 'Robotic Sub-Micron Accuracy',
-      desc: 'Computer-guided 3D robotic surgical arms ensure implant placement within 0.01mm of clinical precision.',
+      icon: <Sparkles className="w-6 h-6 text-[#0284C7]" />,
+      title: 'Wide Range of Dental Services',
+      desc: 'From routine family cleanings and pediatric visits to complex 3D dental implants and porcelain veneers, all under one roof.',
     },
     {
-      icon: <Sparkles className="w-6 h-6 text-[#00A3FF]" />,
-      title: 'Painless Laser Sterilization',
-      desc: 'Advanced dental lasers eliminate bacteria and decay with zero vibration, minimal noise, and faster healing.',
+      icon: <Cpu className="w-6 h-6 text-[#00A3FF]" />,
+      title: 'Modern Technology',
+      desc: 'Low-radiation 3D CBCT imaging, iTero digital impressions, and gentle laser treatments for maximum clinical accuracy.',
+    },
+    {
+      icon: <HeartHandshake className="w-6 h-6 text-emerald-500" />,
+      title: 'Personalized Dental Care',
+      desc: 'Tailored treatment plans that respect your individual smile goals, schedule, comfort preferences, and budget.',
     },
     {
       icon: <Award className="w-6 h-6 text-[#0284C7]" />,
-      title: 'VITA BL1 Porcelain Artistry',
-      desc: 'Master dental ceramists hand-craft multi-layered porcelain veneers designed specifically for your facial geometry.',
+      title: 'Alberta Dental Fee Guide',
+      desc: 'We follow the current Alberta Dental Association Fee Guide to ensure transparent, fair, and accessible pricing for all patients.',
     },
     {
-      icon: <Clock className="w-6 h-6 text-emerald-500" />,
-      title: '24/7 Emergency Concierge',
-      desc: 'Direct line access to emergency dental specialists in Midtown Manhattan with same-day priority appointments.',
+      icon: <Smile className="w-6 h-6 text-[#00A3FF]" />,
+      title: 'Patient Focused Dentistry',
+      desc: 'Warm hospitality, gentle touch, relaxing climate-controlled suites, and sedation options for anxious patients.',
     },
     {
-      icon: <ShieldCheck className="w-6 h-6 text-[#0284C7]" />,
-      title: 'Lifetime Surgical Warranty',
-      desc: 'All structural implant posts and porcelain crowns are backed by our comprehensive lifetime warranty guarantee.',
-    },
-    {
-      icon: <HeartHandshake className="w-6 h-6 text-[#00A3FF]" />,
-      title: 'Concierge Sedation Care',
-      desc: 'Relaxing IV sedation, climate-controlled suites, and personalized comfort amenities tailored for anxious patients.',
+      icon: <Star className="w-6 h-6 text-amber-500" />,
+      title: '5-Star Google Reviews',
+      desc: 'Over 320+ verified 5-star patient reviews praising our compassionate team, painless procedures, and beautiful smile results.',
     },
   ];
 
   return (
-    <section id="why-choose-us" className="relative py-28 px-6 bg-[#F8FAFC]/80 backdrop-blur-xl border-t border-slate-200/60 overflow-hidden">
-      {/* Ambient Glow */}
+    <section id="why-choose-us" className="relative py-28 px-6 bg-white border-t border-slate-200/80 overflow-hidden">
+      {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#0284C7]/5 rounded-full blur-[160px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
           <span className="text-xs font-mono text-[#0284C7] uppercase tracking-widest font-bold mb-3">
-            THE ARCHITECTURAL DIFFERENCE
+            THE HOME OF SMILES ADVANTAGE
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-            Why Choose <span className="text-gradient-cyan">Smile Dental Groups</span>
+            Why Choose <span className="text-gradient-cyan">Home of Smiles</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mt-4 font-normal">
-            Combining Harvard DMD clinical leadership with bio-robotic technology and five-star Manhattan luxury care.
+            Modern Edmonton dentistry centered around honesty, gentle techniques, and exceptional patient care.
           </p>
         </div>
 

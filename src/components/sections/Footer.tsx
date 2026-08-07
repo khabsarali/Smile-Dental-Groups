@@ -29,37 +29,37 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Top Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-16 border-b border-slate-800">
-          {/* Col 1: Brand & Live Status */}
+          {/* Col 1: Brand & Status */}
           <div className="lg:col-span-2 space-y-6">
             <button onClick={() => handleNav('home')} className="flex items-center gap-3 text-left">
               <div className="w-10 h-10 rounded-xl bg-[#0284C7]/20 border border-[#0284C7]/40 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-[#38BDF8]" />
               </div>
               <span className="text-xl font-extrabold tracking-wider text-white">
-                SMILE <span className="text-[#38BDF8]">DENTAL</span> GROUPS
+                HOME OF <span className="text-[#38BDF8]">SMILES</span>
               </span>
             </button>
 
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-              The international benchmark in architectural dentistry, bio-robotic implants, 3D laser tooth restoration, and luxury cosmetic smile redesign.
+              Terwillegar's modern dental clinic in Southwest Edmonton. Offering comprehensive family, cosmetic, implant, and emergency dentistry following the Alberta Dental Fee Guide.
             </p>
 
             {/* Live Status Badge */}
             <div className="inline-flex items-center gap-2 bg-slate-900/90 px-3.5 py-1.5 rounded-full text-xs font-mono border border-emerald-500/30 text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>● CLINIC OPEN • Emergency Care 24/7</span>
+              <span>● OPEN 7 DAYS A WEEK • Emergency Dentistry</span>
             </div>
           </div>
 
           {/* Col 2: Navigation Hub */}
           <div>
-            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Navigation Hub</h4>
+            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Navigation</h4>
             <ul className="space-y-2.5 text-xs text-slate-300">
               {[
-                { label: '3D Keynote Showcase', page: 'home' },
-                { label: 'About Us & Dr. Vance', page: 'about' },
-                { label: 'Services & Treatments', page: 'services' },
-                { label: 'Smile Gallery & Cases', page: 'gallery' },
+                { label: '3D Treatment Journey', page: 'home' },
+                { label: 'About Our Clinic', page: 'about' },
+                { label: 'Comprehensive Services', page: 'services' },
+                { label: 'Smile Transformations', page: 'gallery' },
                 { label: 'Book Appointment', page: 'appointment' },
               ].map((item, idx) => (
                 <li key={idx}>
@@ -75,11 +75,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Col 3: Treatments */}
+          {/* Col 3: Services */}
           <div>
-            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Treatments</h4>
+            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Services</h4>
             <ul className="space-y-2.5 text-xs text-slate-300">
-              {['3D Porcelain Veneers', 'Robotic Implants', 'Microscopic Root Canal', 'Laser Whitening', 'Clear Aligners', 'Sedation Care'].map((item, idx) => (
+              {['Dental Implants', 'Porcelain Veneers', 'Invisalign Aligners', 'Teeth Whitening', 'Root Canal Therapy', 'Pediatric Dentistry'].map((item, idx) => (
                 <li key={idx}>
                   <button
                     onClick={() => handleNav('services')}
@@ -93,25 +93,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Col 4: Contact & Location */}
+          {/* Col 4: Location & Direct Contact */}
           <div>
-            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Location & Direct</h4>
+            <h4 className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider mb-4 font-bold">Contact & Location</h4>
             <div className="space-y-3 text-xs text-slate-300">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#38BDF8] shrink-0 mt-0.5" />
-                <span>740 Fifth Avenue, 18th Floor, New York, NY 10019</span>
+                <span>2408 Rabbit Hill Rd NW, Edmonton, AB</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                <span>+1 (800) 555-SMILE</span>
+                <span>780-430-1336</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#38BDF8] shrink-0" />
-                <span>concierge@smiledentalgroups.com</span>
+                <span>info@HomeOfSmiles.ca</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Mon - Sat: 8:00 AM - 8:00 PM</span>
+                <span>Open 7 Days a Week</span>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
           <div>
-            © 2026 SMILE DENTAL GROUPS. ALL RIGHTS RESERVED. ARCHITECTURAL DENTAL PRECISION.
+            © 2026 HOME OF SMILES DENTAL. ALL RIGHTS RESERVED. ALBERTA DENTAL FEE GUIDE COMPLIANT.
           </div>
 
           <div className="flex items-center gap-6">

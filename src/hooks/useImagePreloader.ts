@@ -1,59 +1,99 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const TOTAL_FRAMES = 150;
-const INITIAL_PRELOAD_COUNT = 15; // Fast initial TTI (< 1.0s)
-const SLIDING_WINDOW_BUFFER = 15; // Preload 15 frames ahead of scroll position
-
 export type FrameAsset = ImageBitmap | HTMLImageElement;
 
+export interface SceneMeta {
+  id: number;
+  folder: string;
+  frameCount: number;
+}
+
+export const SCENES_CONFIG: SceneMeta[] = [
+  { id: 1, folder: 'scene-1', frameCount: 300 },
+  { id: 2, folder: 'scene-2', frameCount: 299 },
+  { id: 3, folder: 'scene-3', frameCount: 300 },
+  { id: 4, folder: 'scene-4', frameCount: 300 },
+];
+
+export const TOTAL_ANIMATION_FRAMES = 1199;
+const INITIAL_PRELOAD_COUNT = 15;
+const STREAMING_BUFFER_WINDOW = 16;
+
 export function useImagePreloader() {
-  const [images, setImages] = useState<(FrameAsset | null)[]>(new Array(TOTAL_FRAMES).fill(null));
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const loadingStatusRef = useRef<boolean[]>(new Array(TOTAL_FRAMES).fill(false));
-  const imagesRef = useRef<(FrameAsset | null)[]>(new Array(TOTAL_FRAMES).fill(null));
+  const cacheRef = useRef<Map<string, FrameAsset>>(new Map());
+  const loadingQueueRef = useRef<Set<string>>(new Set());
 
-  // Helper to load single frame using off-thread createImageBitmap or HTMLImageElement
-  const loadSingleFrame = useCallback(async (index: number): Promise<FrameAsset | null> => {
-    if (imagesRef.current[index]) return imagesRef.current[index];
-    if (loadingStatusRef.current[index]) return null;
+  // Helper to format frame path from global frame index (0 to 1198)
+  const getFramePath = useCallback((globalIndex: number): { sceneId: number; path: string } => {
+    let acc = 0;
+    for (const scene of SCENES_CONFIG) {
+      if (globalIndex < acc + scene.frameCount) {
+        const localIndex = globalIndex - acc + 1;
+        const frameStr = String(localIndex).padStart(3, '0');
+        return {
+          sceneId: scene.id,
+          path: `/assets/scenes/${scene.folder}/ezgif-frame-${frameStr}.png`,
+        };
+      }
+      acc += scene.frameCount;
+    }
+    return {
+      sceneId: 4,
+      path: `/assets/scenes/scene-4/ezgif-frame-300.png`,
+    };
+  }, []);
 
-    loadingStatusRef.current[index] = true;
-    const frameNum = String(index + 1).padStart(3, '0');
-    const src = `/assets/sequence/ezgif-frame-${frameNum}.jpg`;
+  // Asynchronous off-thread frame loader using createImageBitmap
+  const loadSingleFrame = useCallback(async (globalIndex: number): Promise<FrameAsset | null> => {
+    const { path } = getFramePath(globalIndex);
+    if (cacheRef.current.has(path)) {
+      return cacheRef.current.get(path)!;
+    }
+    if (loadingQueueRef.current.has(path)) {
+      return null;
+    }
+
+    loadingQueueRef.current.add(path);
 
     try {
-      const response = await fetch(src);
+      const response = await fetch(path);
       const blob = await response.blob();
 
       if ('createImageBitmap' in window) {
         const bitmap = await createImageBitmap(blob);
-        imagesRef.current[index] = bitmap;
+        cacheRef.current.set(path, bitmap);
+        loadingQueueRef.current.delete(path);
         return bitmap;
       } else {
         const img = new Image();
-        img.src = src;
+        img.src = path;
         if ('decode' in img) {
           await img.decode();
         }
-        imagesRef.current[index] = img;
+        cacheRef.current.set(path, img);
+        loadingQueueRef.current.delete(path);
         return img;
       }
     } catch {
-      // Fallback standard image load
       return new Promise((resolve) => {
         const img = new Image();
-        img.src = src;
+        img.src = path;
         img.onload = () => {
-          imagesRef.current[index] = img;
+          cacheRef.current.set(path, img);
+          loadingQueueRef.current.delete(path);
           resolve(img);
         };
-        img.onerror = () => resolve(null);
+        img.onerror = () => {
+          loadingQueueRef.current.delete(path);
+          resolve(null);
+        };
       });
     }
-  }, []);
+  }, [getFramePath]);
 
-  // Initial Preload of first 15 frames
+  // Initial Preload of first 15 frames for instant TTI (< 1.0s)
   useEffect(() => {
     let isMounted = true;
     let completed = 0;
@@ -75,11 +115,10 @@ export function useImagePreloader() {
 
       await Promise.all(promises);
 
-      // Background stream remaining frames progressively
-      for (let i = INITIAL_PRELOAD_COUNT; i < TOTAL_FRAMES; i++) {
+      // Background stream initial 60 frames of Scene 1
+      for (let i = INITIAL_PRELOAD_COUNT; i < 60; i++) {
         if (!isMounted) break;
         await loadSingleFrame(i);
-        setImages([...imagesRef.current]);
       }
     };
 
@@ -90,28 +129,33 @@ export function useImagePreloader() {
     };
   }, [loadSingleFrame]);
 
-  // Request window streaming for smooth scrolling
-  const ensureFrameLoaded = useCallback((currentIndex: number) => {
-    const start = Math.max(0, currentIndex - 2);
-    const end = Math.min(TOTAL_FRAMES - 1, currentIndex + SLIDING_WINDOW_BUFFER);
+  // Request window streaming for continuous scroll playback
+  const ensureFrameLoaded = useCallback((currentGlobalIndex: number) => {
+    const start = Math.max(0, currentGlobalIndex - 2);
+    const end = Math.min(TOTAL_ANIMATION_FRAMES - 1, currentGlobalIndex + STREAMING_BUFFER_WINDOW);
 
     for (let i = start; i <= end; i++) {
-      if (!imagesRef.current[i] && !loadingStatusRef.current[i]) {
-        loadSingleFrame(i).then(() => {
-          setImages([...imagesRef.current]);
-        });
+      const { path } = getFramePath(i);
+      if (!cacheRef.current.has(path) && !loadingQueueRef.current.has(path)) {
+        loadSingleFrame(i);
       }
     }
-  }, [loadSingleFrame]);
+  }, [getFramePath, loadSingleFrame]);
+
+  // Retrieve cached frame
+  const getCachedFrame = useCallback((globalIndex: number): FrameAsset | null => {
+    const { path } = getFramePath(globalIndex);
+    return cacheRef.current.get(path) || null;
+  }, [getFramePath]);
 
   const progress = Math.min(Math.round((loadedCount / INITIAL_PRELOAD_COUNT) * 100), 100);
 
   return {
-    images: imagesRef.current,
     loadedCount,
-    totalCount: TOTAL_FRAMES,
+    totalCount: TOTAL_ANIMATION_FRAMES,
     progress,
     isLoaded,
     ensureFrameLoaded,
+    getCachedFrame,
   };
 }

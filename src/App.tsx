@@ -12,9 +12,13 @@ import { HeroSequenceCanvas } from './components/hero/HeroSequenceCanvas';
 import { ThreeBackground } from './components/hero/ThreeBackground';
 import { Footer } from './components/sections/Footer';
 
-import { BeforeAfterSlider } from './components/sections/BeforeAfterSlider';
-import { AboutClinic } from './components/sections/AboutClinic';
+import { WelcomeSection } from './components/sections/WelcomeSection';
+import { Treatments } from './components/sections/Treatments';
 import { WhyChooseUs } from './components/sections/WhyChooseUs';
+import { AboutClinic } from './components/sections/AboutClinic';
+import { OurTeam } from './components/sections/OurTeam';
+import { TreatmentTimeline } from './components/sections/TreatmentTimeline';
+import { ReviewsSection } from './components/sections/ReviewsSection';
 import { FAQSection } from './components/sections/FAQSection';
 import { ContactSection } from './components/sections/ContactSection';
 
@@ -28,7 +32,7 @@ gsap.registerPlugin(ScrollTrigger);
 export type PageId = 'home' | 'about' | 'services' | 'gallery' | 'appointment';
 
 export function App() {
-  const { images, loadedCount, totalCount, progress, isLoaded, ensureFrameLoaded } = useImagePreloader();
+  const { loadedCount, totalCount, progress, isLoaded, ensureFrameLoaded, getCachedFrame } = useImagePreloader();
   const [currentPage, setCurrentPage] = useState<PageId>('home');
   const [currentStage, setCurrentStage] = useState<number>(1);
   const [globalScrollProgress, setGlobalScrollProgress] = useState<number>(0);
@@ -56,7 +60,7 @@ export function App() {
     };
   }, []);
 
-  // Global Document ScrollTrigger mapping 0% (top) to 100% (bottom of page)
+  // Global Document ScrollTrigger mapping 0% to 100% across the 3D scroll viewport
   useEffect(() => {
     if (!pageContainerRef.current) return;
 
@@ -97,7 +101,7 @@ export function App() {
       ref={pageContainerRef}
       className="relative min-h-screen bg-white text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
     >
-      {/* High-Tech Preloader */}
+      {/* SECTION 1: High-Tech Preloader */}
       <Preloader
         progress={progress}
         loadedCount={loadedCount}
@@ -114,35 +118,47 @@ export function App() {
       {/* Page Routing */}
       {currentPage === 'home' && (
         <>
-          {/* Fixed Full-Screen 3D Background Canvas Layer */}
+          {/* SECTION 2: Fixed Fullscreen 3D Story Canvas (1199 Master Frames) */}
           <HeroSequenceCanvas
-            images={images}
             scrollProgress={globalScrollProgress}
             currentStage={currentStage}
             ensureFrameLoaded={ensureFrameLoaded}
+            getCachedFrame={getCachedFrame}
           />
 
-          {/* Fixed Full-Screen R3F 3D Particle Overlay */}
+          {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
           <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
 
           {/* Clean 3D Scroll Journey Viewport (100% Unobstructed 3D Animation) */}
           <div id="hero-container" className="relative w-full h-[500vh] z-20 pointer-events-none" />
 
-          {/* Website Content Begins Immediately After Final Smile Reveal */}
-          <main className="relative z-30 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 shadow-[0_-20px_50px_rgba(15,23,42,0.1)] transition-all duration-700">
-            {/* 1. Before & After Gallery */}
-            <BeforeAfterSlider />
+          {/* Post-Animation Homepage Flow (Begins Immediately After Final Smile Reveal) */}
+          <main className="relative z-30 bg-white shadow-[0_-20px_50px_rgba(15,23,42,0.08)] transition-all duration-700">
+            {/* SECTION 3: Welcome to Home of Smiles Dental */}
+            <WelcomeSection onNavigate={handleNavigate} />
 
-            {/* 2. About the Clinic */}
-            <AboutClinic />
+            {/* SECTION 4: Comprehensive Services */}
+            <Treatments />
 
-            {/* 3. Why Choose Us */}
+            {/* SECTION 5: Why Choose Us */}
             <WhyChooseUs />
 
-            {/* 4. Frequently Asked Questions */}
+            {/* SECTION 6: About Us */}
+            <AboutClinic />
+
+            {/* SECTION 7: Our Team */}
+            <OurTeam />
+
+            {/* SECTION 8: Treatment Journey Timeline */}
+            <TreatmentTimeline />
+
+            {/* SECTION 9: 5-Star Google Reviews */}
+            <ReviewsSection />
+
+            {/* SECTION 10: Frequently Asked Questions */}
             <FAQSection />
 
-            {/* 5. Contact Us & Reservation */}
+            {/* SECTION 11 & 12: Book Appointment & Contact Us */}
             <ContactSection />
           </main>
         </>
@@ -153,7 +169,7 @@ export function App() {
       {currentPage === 'gallery' && <GalleryPage />}
       {currentPage === 'appointment' && <AppointmentPage />}
 
-      {/* Luxury Footer Navigation Hub */}
+      {/* SECTION 13: Luxury Footer Navigation Hub */}
       <div className="relative z-30">
         <Footer onNavigate={handleNavigate} />
       </div>

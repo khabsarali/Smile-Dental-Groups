@@ -13,34 +13,34 @@ export const FAQSection: React.FC = () => {
 
   const faqs: FAQItem[] = [
     {
-      question: 'Are robotic dental implants painful?',
+      question: 'Do you follow the Alberta Dental Fee Guide?',
       answer:
-        'No. Robotic guided surgery utilizes computer-planned micro-incisions that minimize tissue trauma. Coupled with localized digital anesthesia or concierge sedation, patients experience virtually zero pain during the procedure and significantly faster recovery.',
+        'Yes. Home of Smiles strictly follows the current Alberta Dental Association Fee Guide to ensure our pricing remains transparent, fair, and accessible for all Edmonton individuals and families.',
     },
     {
-      question: 'How long do 3D Porcelain Veneers last?',
+      question: 'Do you offer direct billing to Canadian insurance plans?',
       answer:
-        'Our custom multi-layered VITA BL1 porcelain veneers are engineered for maximum durability. With standard oral hygiene and biannual checkups, they typically last 15 to 25+ years without staining or fading.',
+        'Yes. We direct bill to almost all major Canadian dental insurance providers (including Sun Life, Manulife, Canada Life, Green Shield, Alberta Blue Cross, and more), so you only pay your co-pay or deductible.',
     },
     {
-      question: 'Can I complete my smile restoration in a single visit?',
+      question: 'Are you accepting new patients and emergency walk-ins?',
       answer:
-        'Yes. Utilizing our in-house 3D CAD/CAM milling laboratory and laser scanning technology, same-day ceramic crowns and temporary veneer prototypes can be designed, fabricated, and placed in just one appointment.',
+        'Absolutely! We warmly welcome new patients of all ages from Terwillegar, Windermere, Riverbend, and across Edmonton. We are open 7 days a week and offer same-day priority emergency dental care.',
     },
     {
-      question: 'What is the cost of a full 3D smile consultation?',
+      question: 'How long does Invisalign treatment take?',
       answer:
-        'Initial consultations include full-jaw 3D CBCT diagnostic imaging, AI root mapping telemetry, and personalized treatment planning with Dr. Vance. We provide transparent fee structures and flexible healthcare financing plans.',
+        'Most adult and teen Invisalign treatments take between 6 to 18 months depending on the complexity of your alignment. With our digital 3D iTero scanner, we show you your predicted smile outcome before you start.',
     },
     {
-      question: 'How does painless laser decay removal work?',
+      question: 'What should I do during a dental emergency?',
       answer:
-        'Dental lasers emit focused light energy that vaporizes decay and bacteria at the molecular level without the friction, heat, or noise of traditional dental drills, preserving maximum healthy natural tooth structure.',
+        'Call our direct emergency line at 780-430-1336 immediately. If a tooth is knocked out, keep it moist in milk or saliva and come straight to our clinic at 2408 Rabbit Hill Rd NW.',
     },
     {
-      question: 'Do you offer emergency dental services on weekends?',
+      question: 'Are dental implants painful?',
       answer:
-        'Yes. Smile Dental Groups provides 24/7 emergency concierge care at our Fifth Avenue practice for acute dental trauma, severe pain, or displaced restorations.',
+        'No. Utilizing local anesthesia or dental sedation combined with 3D CBCT guided placement, most patients report minimal discomfort during the procedure and easily manage recovery with standard over-the-counter pain relievers.',
     },
   ];
 
@@ -50,7 +50,7 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq-section" className="relative py-28 px-6 bg-[#F8FAFC]/80 backdrop-blur-xl border-t border-slate-200/60 overflow-hidden">
+    <section id="faq-section" className="relative py-28 px-6 bg-white border-t border-slate-200/80 overflow-hidden">
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
@@ -58,13 +58,13 @@ export const FAQSection: React.FC = () => {
             <HelpCircle className="w-6 h-6 text-[#0284C7]" />
           </div>
           <span className="text-xs font-mono text-[#0284C7] uppercase tracking-widest font-bold mb-2">
-            PATIENT INFORMATION
+            PATIENT INFORMATION & ANSWERS
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             Frequently Asked Questions
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-xl mt-3 font-normal">
-            Everything you need to know about our 3D treatments, robotic procedures, and consultation process.
+            Helpful information regarding the Alberta Fee Guide, direct insurance billing, and clinic procedures.
           </p>
         </div>
 

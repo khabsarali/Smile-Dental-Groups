@@ -1,288 +1,248 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Zap, ShieldAlert, CheckCircle, ArrowRight, X, Clock, Award, Activity } from 'lucide-react';
+import { Sparkles, ShieldCheck, Zap, ArrowUpRight, Check, X, Award, Smile, Stethoscope, HeartHandshake } from 'lucide-react';
 import { soundFX } from '../../ui/SoundEffects';
 
-interface TreatmentItem {
+interface TreatmentSpec {
   id: string;
-  title: string;
+  name: string;
   category: string;
   tagline: string;
   description: string;
-  icon: React.ReactNode;
-  duration: string;
   recovery: string;
-  guarantee: string;
-  price: string;
-  features: string[];
-  image: string;
+  durability: string;
+  technology: string;
+  benefits: string[];
 }
 
 export const Treatments: React.FC = () => {
-  const [selectedTreatment, setSelectedTreatment] = useState<TreatmentItem | null>(null);
+  const [selectedTreatment, setSelectedTreatment] = useState<TreatmentSpec | null>(null);
 
-  const treatmentData: TreatmentItem[] = [
+  const treatmentsData: TreatmentSpec[] = [
     {
-      id: 'general',
-      title: 'General & Preventative Care',
-      category: 'Diagnostic & Care',
-      tagline: 'Ultrasonic Cleaning & Bio-Film Elimination',
-      description:
-        'Comprehensive oral health maintenance utilizing ultrasonic scaling, digital plaque mapping, high-definition intraoral cameras, and laser gum therapy.',
-      icon: <Sparkles className="w-6 h-6 text-[#0284C7]" />,
-      duration: '45 - 60 Mins',
+      id: 'general-family',
+      name: 'General & Family Dentistry',
+      category: 'Preventive Care',
+      tagline: 'Comprehensive oral health for toddlers, teens, adults, and seniors.',
+      description: 'Routine clinical exams, digital low-radiation X-rays, plaque scaling, fluoride varnish, and cavity prevention tailored for the entire family.',
       recovery: 'Immediate',
-      guarantee: '100% Plaque Free',
-      price: '$150 - $300',
-      features: ['Ultrasonic Scaling', 'Intraoral 4K Video Scan', 'Enamel Fluoride Shield', 'Oral Cancer Screening'],
-      image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=800',
+      durability: 'Ongoing Preventive Health',
+      technology: 'Intraoral 3D HD Camera',
+      benefits: ['Gentle touch for kids', 'Alberta Fee Guide pricing', 'Direct insurance billing', 'Preventive care plans'],
     },
     {
       id: 'implants',
-      title: 'Robotic Dental Implants',
-      category: 'Surgical Reconstruction',
-      tagline: '3D Guided Surgical Titanium Tooth Placement',
-      description:
-        'Permanent tooth replacement engineered with surgical-grade titanium posts and custom zirconia crowns, positioned with sub-millimeter robotic navigation.',
-      icon: <Zap className="w-6 h-6 text-[#00A3FF]" />,
-      duration: '1 - 2 Hours',
-      recovery: '2 - 3 Days',
-      guarantee: 'Lifetime Warranty',
-      price: '$1,800 - $3,500',
-      features: ['CBCT 3D Bone Mapping', 'Navigated Surgical Guide', 'Pure Grade V Titanium', 'Same-Day Crown Option'],
-      image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=800',
+      name: 'Dental Implants',
+      category: 'Permanent Restoration',
+      tagline: 'Sub-micron titanium & zirconia implants with natural bone integration.',
+      description: 'Replace single, multiple, or full arches of missing teeth with bio-compatible titanium root posts and custom porcelain crowns.',
+      recovery: '2-4 Days',
+      durability: 'Lifetime Structural Support',
+      technology: '3D CBCT Guided Robotic Surgery',
+      benefits: ['Prevents bone resorption', 'Functions like real teeth', '100% natural bite force', 'Permanent aesthetic result'],
     },
     {
-      id: 'rootcanal',
-      title: 'Microscopic Root Canal Therapy',
-      category: 'Endodontics',
-      tagline: 'Laser Disinfection & Painless Bio-Sealing',
-      description:
-        'Preserve your natural tooth roots using high-power operating microscopes and laser sterilization to remove infected nerve tissue with zero discomfort.',
-      icon: <Activity className="w-6 h-6 text-amber-500" />,
-      duration: '60 - 90 Mins',
-      recovery: '24 Hours',
-      guarantee: 'Natural Tooth Preserved',
-      price: '$850 - $1,400',
-      features: ['30x Optical Microscope', 'Er:YAG Laser Disinfection', 'Hot Bioceramic Obturation', 'Painless Local Anesthesia'],
-      image: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?auto=format&fit=crop&q=80&w=800',
+      id: 'cosmetic',
+      name: 'Cosmetic Dentistry & Veneers',
+      category: 'Aesthetic Design',
+      tagline: 'Custom hand-crafted VITA porcelain veneers and smile transformations.',
+      description: 'Correct chips, gaps, discoloration, and tooth shape with ultra-thin porcelain veneers designed to complement your facial structure.',
+      recovery: 'Zero downtime',
+      durability: '15-25+ Years',
+      technology: 'Digital Smile Design (DSD)',
+      benefits: ['Stain-resistant porcelain', 'Custom tooth shading', 'Non-invasive preparation', 'Radiant natural glow'],
     },
     {
-      id: 'veneers',
-      title: '3D Porcelain Veneers',
-      category: 'Cosmetic Dentistry',
-      tagline: 'Ultra-Thin VITA BL1 Ceramic Smile Makeover',
-      description:
-        'Architectural smile redesign featuring hand-finished 0.2mm porcelain shells tailored to match your facial features, skin tone, and golden ratio.',
-      icon: <Award className="w-6 h-6 text-[#0284C7]" />,
-      duration: '2 Appointments',
+      id: 'restorative',
+      name: 'Restorative Care & Crowns',
+      category: 'Tooth Repair',
+      tagline: 'Same-day ceramic crowns, bridges, inlays, and tooth-colored composite fillings.',
+      description: 'Restore broken, decayed, or weakened teeth with bio-mimetic ceramic restorations engineered to blend seamlessly with surrounding enamel.',
+      recovery: '1-2 Days',
+      durability: '15-20 Years',
+      technology: 'CAD/CAM Chairside Milling',
+      benefits: ['Mercury-free composite', 'Same-day crowns available', 'Reinforces natural tooth', 'Natural translucency'],
+    },
+    {
+      id: 'pediatric',
+      name: 'Pediatric Dentistry',
+      category: 'Children’s Care',
+      tagline: 'Fun, gentle, and relaxing dental experiences for young smiles.',
+      description: 'Specialized dental care for infants, children, and teens with child-friendly sedation options, sealants, and early orthodontic evaluations.',
       recovery: 'Immediate',
-      guarantee: '15-Year Porcelain Guarantee',
-      price: '$1,200 / Tooth',
-      features: ['Digital Smile Design Mockup', 'Zero/Minimal Enamel Shaving', 'Stain-Proof Ceramic', 'Natural Light Translucency'],
-      image: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&q=80&w=800',
+      durability: 'Lifelong Healthy Habits',
+      technology: 'Needleless Topical Anesthesia',
+      benefits: ['Stress-free child visits', 'Cavity prevention sealants', 'Early alignment screening', 'Gentle hygienists'],
+    },
+    {
+      id: 'emergency',
+      name: 'Emergency Dentistry',
+      category: 'Immediate Care',
+      tagline: 'Same-day urgent relief for toothaches, trauma, and broken teeth.',
+      description: 'Direct priority emergency dental care in Terwillegar for severe toothaches, chipped teeth, knocked-out teeth, and abscess infections.',
+      recovery: 'Same-day relief',
+      durability: 'Clinical Emergency Stabilization',
+      technology: 'Digital Emergency Triage',
+      benefits: ['Open 7 days a week', 'Immediate pain relief', 'Direct emergency phone line', 'Same-day appointments'],
     },
     {
       id: 'whitening',
-      title: 'Laser Teeth Whitening',
-      category: 'Aesthetic Brightening',
-      tagline: 'Up to 8 Shades Brighter in 45 Minutes',
-      description:
-        'Advanced cold-laser activated peroxide gel breaks down deep intrinsic stains without damaging enamel or causing thermal tooth sensitivity.',
-      icon: <Sparkles className="w-6 h-6 text-[#00A3FF]" />,
-      duration: '45 Mins',
-      recovery: 'Immediate',
-      guarantee: '8+ Shades Brighter',
-      price: '$450 - $650',
-      features: ['Cold Laser Gel Activation', 'Zero Sensitivity Formula', 'Desensitizing Mineral Shield', 'Take-Home Touchup Kit'],
-      image: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=800',
+      name: 'Professional Teeth Whitening',
+      category: 'Cosmetic Brightening',
+      tagline: 'Painless laser and in-office LED enamel whitening up to 8 shades lighter.',
+      description: 'Remove deep coffee, tea, and age stains safely with professional-strength whitening gels activated by gentle LED laser light.',
+      recovery: 'Zero downtime',
+      durability: '1-3 Years with touchups',
+      technology: 'Laser Enamel Bleaching',
+      benefits: ['Up to 8 shades whiter', 'Zero sensitivity formula', '1-hour in-office session', 'Take-home custom trays'],
     },
     {
-      id: 'orthodontics',
-      title: 'Invisible Orthodontics',
-      category: 'Teeth Realignment',
-      tagline: 'Clear Aligners with AI Movement Telemetry',
-      description:
-        'Straighten crowded or gapped teeth discreetly using clear Medical Grade thermoplastic aligners generated from 3D intraoral scans.',
-      icon: <ShieldAlert className="w-6 h-6 text-[#0284C7]" />,
-      duration: '6 - 12 Months',
-      recovery: 'None',
-      guarantee: 'Perfect Bite Alignment',
-      price: '$2,500 - $4,500',
-      features: ['3D Scan (No Messy Impression)', 'AI Predictive Tooth Tracking', 'Removable & Removable', 'Includes Post-Retainers'],
-      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800',
+      id: 'invisalign',
+      name: 'Invisalign Clear Aligners',
+      category: 'Orthodontics',
+      tagline: 'Discreet, removable clear aligners to straighten crooked teeth.',
+      description: 'Straighten crowded teeth, close gaps, and correct bite issues without metal brackets or wires using custom 3D-printed transparent aligners.',
+      recovery: 'No diet restrictions',
+      durability: 'Permanent with retainers',
+      technology: 'iTero 3D Digital Scanner',
+      benefits: ['Virtually invisible', 'Removable for eating', 'No metal bracket cuts', 'Predictable 3D timeline'],
+    },
+    {
+      id: 'cleanings',
+      name: 'Check-Ups & Cleanings',
+      category: 'Preventive Hygiene',
+      tagline: 'Gentle ultrasonic scaling, airflow polish, and periodontal exams.',
+      description: 'Comprehensive periodontal health exams, ultrasonic tartar removal, gentle airflow stain removal, and personalized oral health coaching.',
+      recovery: 'Immediate refresh',
+      durability: 'Biannual recommended',
+      technology: 'Airflow Ultrasonic Scaling',
+      benefits: ['Removes tough tartar', 'Freshens breath', 'Prevents gum disease', 'Smooth clean feel'],
     },
   ];
 
-  const handleOpenModal = (item: TreatmentItem) => {
+  const openModal = (treatment: TreatmentSpec) => {
     soundFX.playClick();
-    setSelectedTreatment(item);
+    setSelectedTreatment(treatment);
   };
 
-  const handleCloseModal = () => {
+  const closeModal = () => {
     soundFX.playClick();
     setSelectedTreatment(null);
   };
 
-  const scrollToBooking = () => {
-    handleCloseModal();
-    const el = document.getElementById('booking-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <section id="treatments-section" className="relative py-28 px-6 border-t border-slate-200/20">
+    <section id="services-section" className="relative py-28 px-6 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono font-bold text-[#0284C7] tracking-widest uppercase mb-4 border border-[#0284C7]/30 shadow-sm">
-            PRECISION PROCEDURES
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0284C7]/10 border border-[#0284C7]/20 text-[#0284C7] text-xs font-mono font-bold uppercase tracking-wider mb-3">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>TERWILLEGAR CLINICAL SERVICES</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-3xl leading-tight mb-4">
-            Advanced Clinical Treatments
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+            Comprehensive Dental Services
           </h2>
-          <p className="text-slate-600 max-w-xl text-sm sm:text-base font-normal">
-            Every procedure is planned using 3D spatial scanning and executed with surgical robotic precision.
+          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mt-4 font-normal">
+            From routine family checkups to 3D dental implants and cosmetic smile design, experience modern dental excellence in Edmonton.
           </p>
         </div>
 
-        {/* 6 Cards Grid */}
+        {/* Treatments Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {treatmentData.map((item, idx) => (
-            <motion.div
+          {treatmentsData.map((item) => (
+            <div
               key={item.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              onClick={() => openModal(item)}
               onMouseEnter={() => soundFX.playHover()}
-              className="glass-card rounded-3xl p-6 flex flex-col justify-between group cursor-pointer border border-slate-200 hover:border-[#0284C7]/40 relative overflow-hidden shadow-lg"
-              onClick={() => handleOpenModal(item)}
+              className="glass-card rounded-3xl p-8 border border-slate-200/90 hover:border-[#0284C7]/40 flex flex-col justify-between cursor-pointer group"
             >
-              {/* Card Image Thumbnail */}
-              <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-6">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/60 via-transparent to-transparent" />
-                <div className="absolute top-3 left-3 glass-panel px-3 py-1 rounded-full text-[10px] font-mono font-bold text-[#0284C7] border border-[#0284C7]/30">
-                  {item.category}
-                </div>
-              </div>
-
-              {/* Title & Tagline */}
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-xl bg-slate-100 border border-slate-200">{item.icon}</div>
-                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#0284C7] transition-colors">
-                    {item.title}
-                  </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-mono font-bold text-[#0284C7] bg-[#0284C7]/10 px-3 py-1 rounded-full">
+                    {item.category}
+                  </span>
+                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#0284C7] group-hover:text-white transition-colors duration-300">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </div>
                 </div>
-                <p className="text-xs font-mono font-bold text-[#00A3FF] mb-3">{item.tagline}</p>
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-6">
-                  {item.description}
+
+                <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#0284C7] transition-colors mb-2">
+                  {item.name}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-6">
+                  {item.tagline}
                 </p>
               </div>
 
-              {/* Card Footer */}
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-slate-700">{item.price}</span>
-                <span className="text-xs font-bold text-[#0284C7] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  View Protocol <ArrowRight className="w-3.5 h-3.5" />
-                </span>
+              <div className="pt-4 border-t border-slate-100 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+                  <span>TECH:</span>
+                  <span className="font-semibold text-slate-800">{item.technology}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+                  <span>DURABILITY:</span>
+                  <span className="font-semibold text-emerald-600">{item.durability}</span>
+                </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Interactive Detail Modal */}
-      <AnimatePresence>
-        {selectedTreatment && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xl">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.3 }}
-              className="glass-panel-glow max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-[#0284C7]/40 relative overflow-hidden max-h-[90vh] overflow-y-auto shadow-2xl"
+      {/* Modal Spec Sheet */}
+      {selectedTreatment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-2xl space-y-6">
+            <button
+              onClick={closeModal}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-slate-100 text-slate-500"
             >
-              {/* Close Button */}
-              <button
-                onClick={handleCloseModal}
-                className="absolute top-6 right-6 p-2 rounded-full glass-panel text-slate-500 hover:text-slate-900 border border-slate-200"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <X className="w-5 h-5" />
+            </button>
 
-              {/* Modal Header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-2xl bg-[#0284C7]/15 border border-[#0284C7]/30">
-                  {selectedTreatment.icon}
-                </div>
-                <div>
-                  <span className="text-xs font-mono font-bold text-[#0284C7] uppercase tracking-wider">
-                    {selectedTreatment.category}
-                  </span>
-                  <h3 className="text-2xl font-extrabold text-slate-900">{selectedTreatment.title}</h3>
-                </div>
+            <div>
+              <span className="text-xs font-mono text-[#0284C7] font-bold uppercase">{selectedTreatment.category}</span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">{selectedTreatment.name}</h3>
+            </div>
+
+            <p className="text-sm text-slate-600 leading-relaxed">{selectedTreatment.description}</p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 py-4 border-y border-slate-100 font-mono text-xs">
+              <div>
+                <span className="text-slate-400 block mb-1">RECOVERY</span>
+                <span className="font-bold text-slate-800">{selectedTreatment.recovery}</span>
               </div>
-
-              <p className="text-slate-600 text-sm leading-relaxed mb-6">
-                {selectedTreatment.description}
-              </p>
-
-              {/* Key Spec Badges */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
-                  <Clock className="w-4 h-4 text-[#0284C7] mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Duration</span>
-                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.duration}</span>
-                </div>
-                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
-                  <Activity className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Recovery</span>
-                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.recovery}</span>
-                </div>
-                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
-                  <Award className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Guarantee</span>
-                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.guarantee}</span>
-                </div>
+              <div>
+                <span className="text-slate-400 block mb-1">DURABILITY</span>
+                <span className="font-bold text-emerald-600">{selectedTreatment.durability}</span>
               </div>
+              <div>
+                <span className="text-slate-400 block mb-1">TECHNOLOGY</span>
+                <span className="font-bold text-[#0284C7]">{selectedTreatment.technology}</span>
+              </div>
+            </div>
 
-              {/* Procedure Highlights */}
-              <div className="space-y-2 mb-8">
-                <h4 className="text-xs font-mono font-bold text-[#0284C7] uppercase tracking-wider mb-2">
-                  Clinical Protocol Highlights
-                </h4>
-                {selectedTreatment.features.map((feat, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
-                    <CheckCircle className="w-4 h-4 text-[#00A3FF] shrink-0" />
-                    <span>{feat}</span>
+            <div className="space-y-2">
+              <h4 className="text-xs font-mono text-slate-900 font-bold uppercase">Clinical Advantages:</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {selectedTreatment.benefits.map((b, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-slate-700">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>{b}</span>
                   </div>
                 ))}
               </div>
+            </div>
 
-              {/* Action CTA */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                <div>
-                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Estimated Fee</span>
-                  <span className="text-xl font-bold font-mono text-[#0284C7]">{selectedTreatment.price}</span>
-                </div>
-                <button
-                  onClick={scrollToBooking}
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-[#0284C7] to-[#00A3FF] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg"
-                >
-                  Schedule Consultation
-                </button>
-              </div>
-            </motion.div>
+            <button
+              onClick={closeModal}
+              className="w-full py-3 bg-[#0284C7] hover:bg-[#00A3FF] text-white rounded-full font-bold text-xs uppercase tracking-wider shadow-md transition-all"
+            >
+              Close Specifications
+            </button>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </section>
   );
 };
