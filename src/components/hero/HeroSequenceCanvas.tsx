@@ -28,7 +28,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
         const prog = self.progress;
         setScrollProgress(prog);
 
-        // Determine current stage (1 to 5)
+        // Determine current scene (1 to 5)
         let stage = 1;
         if (prog < 0.2) stage = 1;
         else if (prog < 0.4) stage = 2;
@@ -79,8 +79,8 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
       ctx.save();
       ctx.scale(dpr, dpr);
 
-      // Clear screen
-      ctx.fillStyle = '#05070A';
+      // Studio background color fill
+      ctx.fillStyle = '#05080E';
       ctx.fillRect(0, 0, width, height);
 
       // Frame calculation
@@ -98,7 +98,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
         const imgAspect = img1.naturalWidth / img1.naturalHeight;
         const screenAspect = width / height;
 
-        // Apply a subtle responsive scale padding factor on smaller screens to keep breathing space
+        // Dynamic scale factor for padding on smaller screens
         const scaleFactor = width < 768 ? 0.90 : width < 1024 ? 0.94 : 0.98;
 
         let renderW = width * scaleFactor;
@@ -107,13 +107,11 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
         let offsetY = (height - renderH) / 2;
 
         if (screenAspect > imgAspect) {
-          // Viewport is wider than image aspect ratio -> fit to height
           renderH = height * scaleFactor;
           renderW = renderH * imgAspect;
           offsetX = (width - renderW) / 2;
           offsetY = (height - renderH) / 2;
         } else {
-          // Viewport is taller than image aspect ratio -> fit to width
           renderW = width * scaleFactor;
           renderH = renderW / imgAspect;
           offsetX = (width - renderW) / 2;
@@ -130,21 +128,21 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
           ctx.drawImage(img2, offsetX, offsetY, renderW, renderH);
         }
 
-        // Apply Stage-specific canvas volumetric lighting / color grading
+        // Apply Scene-specific canvas volumetric lighting & scan FX
         ctx.globalAlpha = 1.0;
 
         if (currentStage === 2) {
-          // Holographic Diagnostic Cyan Scan line effect
+          // Holographic X-Ray Scan line effect
           const scanY = (scrollProgress % 0.2) * 5 * height;
-          const scanGradient = ctx.createLinearGradient(0, scanY - 40, 0, scanY + 40);
-          scanGradient.addColorStop(0, 'rgba(0, 229, 255, 0)');
-          scanGradient.addColorStop(0.5, 'rgba(0, 229, 255, 0.25)');
-          scanGradient.addColorStop(1, 'rgba(0, 229, 255, 0)');
+          const scanGradient = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
+          scanGradient.addColorStop(0, 'rgba(0, 163, 255, 0)');
+          scanGradient.addColorStop(0.5, 'rgba(0, 163, 255, 0.35)');
+          scanGradient.addColorStop(1, 'rgba(0, 163, 255, 0)');
           ctx.fillStyle = scanGradient;
           ctx.fillRect(0, 0, width, height);
 
-          // Grid scan overlay
-          ctx.strokeStyle = 'rgba(0, 229, 255, 0.05)';
+          // Grid scan lines
+          ctx.strokeStyle = 'rgba(0, 163, 255, 0.06)';
           ctx.lineWidth = 1;
           for (let y = 0; y < height; y += 30) {
             ctx.beginPath();
@@ -153,22 +151,31 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
             ctx.stroke();
           }
         } else if (currentStage === 3) {
-          // Robotic Laser Treatment sparkle tint
-          const laserPulse = Math.sin(Date.now() * 0.005) * 0.1 + 0.15;
-          ctx.fillStyle = `rgba(79, 195, 247, ${laserPulse})`;
+          // Laser Surgery treatment pulse
+          const laserPulse = Math.sin(Date.now() * 0.006) * 0.08 + 0.12;
+          ctx.fillStyle = `rgba(2, 132, 199, ${laserPulse})`;
           ctx.fillRect(0, 0, width, height);
         } else if (currentStage === 4 || currentStage === 5) {
-          // Luxury Glow Vignette
+          // Scene 4 Polishing Light Sweep Effect
+          const sweepX = (Date.now() * 0.3) % (width * 2) - width;
+          const sweepGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 200, height);
+          sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+          sweepGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
+          sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = sweepGrad;
+          ctx.fillRect(0, 0, width, height);
+
+          // Soft Radial Studio Vignette
           const radGrad = ctx.createRadialGradient(
             width / 2,
             height / 2,
             width * 0.2,
             width / 2,
             height / 2,
-            width * 0.7
+            width * 0.75
           );
           radGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-          radGrad.addColorStop(1, 'rgba(5, 7, 10, 0.7)');
+          radGrad.addColorStop(1, 'rgba(5, 8, 14, 0.65)');
           ctx.fillStyle = radGrad;
           ctx.fillRect(0, 0, width, height);
         }
@@ -188,15 +195,14 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
   return (
     <div id="hero-container" ref={containerRef} className="relative w-full h-[500vh]">
       {/* Sticky Fullscreen Canvas Viewport */}
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#05070A]">
+      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#05080E]">
         <canvas
           ref={canvasRef}
           className="w-full h-full block select-none"
         />
 
-        {/* Ambient Dark Gradient Overlays */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#05070A] via-transparent to-[#05070A]/60" />
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#05070A]/80 via-transparent to-[#05070A]/80" />
+        {/* Ambient Dark-to-Light Gradient Overlays */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#F8FAFC]/90 via-transparent to-[#05080E]/40" />
       </div>
     </div>
   );

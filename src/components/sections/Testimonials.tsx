@@ -44,17 +44,17 @@ export const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section id="testimonials-section" className="relative py-28 px-6 bg-[#05070A] overflow-hidden">
+    <section id="testimonials-section" className="relative py-28 px-6 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4 border border-[#4FC3F7]/30 shadow-[0_0_15px_rgba(79,195,247,0.15)]">
+          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono font-bold text-[#0284C7] tracking-widest uppercase mb-4 border border-[#0284C7]/30 shadow-sm">
             PATIENT VERDICT
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight max-w-3xl leading-tight mb-4">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-3xl leading-tight mb-4">
             Patient Smile Testimonials
           </h2>
-          <p className="text-slate-400 max-w-xl text-sm sm:text-base font-normal">
+          <p className="text-slate-600 max-w-xl text-sm sm:text-base font-normal">
             Real stories from patients who experienced our architectural dental transformations.
           </p>
         </div>
@@ -69,43 +69,43 @@ export const Testimonials: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               onMouseEnter={() => soundFX.playHover()}
-              className="glass-panel p-8 rounded-3xl border border-white/10 relative flex flex-col justify-between hover:border-[#4FC3F7]/40 transition-all duration-300"
+              className="glass-panel p-8 rounded-3xl border border-slate-200 relative flex flex-col justify-between hover:border-[#0284C7]/40 transition-all duration-300 shadow-md"
             >
-              <Quote className="absolute top-6 right-6 w-10 h-10 text-white/5 pointer-events-none" />
+              <Quote className="absolute top-6 right-6 w-10 h-10 text-slate-300 pointer-events-none" />
 
               <div>
                 {/* Rating Stars */}
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                   ))}
-                  <span className="ml-2 text-xs font-mono text-[#00E5FF] font-bold">5.0 PERFECT</span>
+                  <span className="ml-2 text-xs font-mono text-[#0284C7] font-bold">5.0 PERFECT</span>
                 </div>
 
                 {/* Comment */}
-                <p className="text-slate-300 text-sm leading-relaxed font-normal mb-8 italic">
+                <p className="text-slate-700 text-sm leading-relaxed font-normal mb-8 italic">
                   "{rev.comment}"
                 </p>
               </div>
 
               {/* Patient Info */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div className="flex items-center gap-3">
                   <img
                     src={rev.avatar}
                     alt={rev.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-[#4FC3F7]/40"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-[#0284C7]/40 shadow-sm"
                   />
                   <div>
-                    <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                    <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                       {rev.name}
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#00E5FF]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0284C7]" />
                     </h4>
-                    <span className="text-[11px] font-mono text-slate-400 block">{rev.role}</span>
+                    <span className="text-[11px] font-mono text-slate-500 block">{rev.role}</span>
                   </div>
                 </div>
 
-                <span className="glass-panel px-3 py-1 rounded-full text-[10px] font-mono text-[#4FC3F7] border border-[#4FC3F7]/20">
+                <span className="glass-panel px-3 py-1 rounded-full text-[10px] font-mono font-bold text-[#0284C7] border border-[#0284C7]/20">
                   {rev.treatment}
                 </span>
               </div>

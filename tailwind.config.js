@@ -8,18 +8,21 @@ export default {
     extend: {
       colors: {
         dental: {
-          dark: '#05070A',
-          card: 'rgba(12, 17, 26, 0.75)',
-          border: 'rgba(79, 195, 247, 0.15)',
-          blue: '#4FC3F7',
-          cyan: '#00E5FF',
-          glow: '#00B0FF',
-          silver: '#E2E8F0',
-          muted: '#94A3B8',
+          light: '#F8FAFC',
+          white: '#FFFFFF',
+          card: 'rgba(255, 255, 255, 0.85)',
+          border: 'rgba(2, 132, 199, 0.15)',
+          blue: '#0284C7',
+          cyan: '#00A3FF',
+          sky: '#38BDF8',
+          glow: '#0284C7',
+          dark: '#0F172A',
+          slate: '#334155',
+          muted: '#64748B',
         }
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Inter', 'SF Pro Display', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       animation: {
@@ -44,8 +47,8 @@ export default {
       },
       backgroundImage: {
         'radial-gradient': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
-        'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
-        'cyan-glow': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(79, 195, 247, 0.12), transparent 40%)',
+        'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+        'cyan-glow': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 163, 255, 0.08), transparent 40%)',
       }
     },
   },

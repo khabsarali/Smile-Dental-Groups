@@ -29,7 +29,7 @@ export const Treatments: React.FC = () => {
       tagline: 'Ultrasonic Cleaning & Bio-Film Elimination',
       description:
         'Comprehensive oral health maintenance utilizing ultrasonic scaling, digital plaque mapping, high-definition intraoral cameras, and laser gum therapy.',
-      icon: <Sparkles className="w-6 h-6 text-[#4FC3F7]" />,
+      icon: <Sparkles className="w-6 h-6 text-[#0284C7]" />,
       duration: '45 - 60 Mins',
       recovery: 'Immediate',
       guarantee: '100% Plaque Free',
@@ -44,7 +44,7 @@ export const Treatments: React.FC = () => {
       tagline: '3D Guided Surgical Titanium Tooth Placement',
       description:
         'Permanent tooth replacement engineered with surgical-grade titanium posts and custom zirconia crowns, positioned with sub-millimeter robotic navigation.',
-      icon: <Zap className="w-6 h-6 text-[#00E5FF]" />,
+      icon: <Zap className="w-6 h-6 text-[#00A3FF]" />,
       duration: '1 - 2 Hours',
       recovery: '2 - 3 Days',
       guarantee: 'Lifetime Warranty',
@@ -59,7 +59,7 @@ export const Treatments: React.FC = () => {
       tagline: 'Laser Disinfection & Painless Bio-Sealing',
       description:
         'Preserve your natural tooth roots using high-power operating microscopes and laser sterilization to remove infected nerve tissue with zero discomfort.',
-      icon: <Activity className="w-6 h-6 text-yellow-400" />,
+      icon: <Activity className="w-6 h-6 text-amber-500" />,
       duration: '60 - 90 Mins',
       recovery: '24 Hours',
       guarantee: 'Natural Tooth Preserved',
@@ -74,7 +74,7 @@ export const Treatments: React.FC = () => {
       tagline: 'Ultra-Thin VITA BL1 Ceramic Smile Makeover',
       description:
         'Architectural smile redesign featuring hand-finished 0.2mm porcelain shells tailored to match your facial features, skin tone, and golden ratio.',
-      icon: <Award className="w-6 h-6 text-[#4FC3F7]" />,
+      icon: <Award className="w-6 h-6 text-[#0284C7]" />,
       duration: '2 Appointments',
       recovery: 'Immediate',
       guarantee: '15-Year Porcelain Guarantee',
@@ -89,7 +89,7 @@ export const Treatments: React.FC = () => {
       tagline: 'Up to 8 Shades Brighter in 45 Minutes',
       description:
         'Advanced cold-laser activated peroxide gel breaks down deep intrinsic stains without damaging enamel or causing thermal tooth sensitivity.',
-      icon: <Sparkles className="w-6 h-6 text-[#00E5FF]" />,
+      icon: <Sparkles className="w-6 h-6 text-[#00A3FF]" />,
       duration: '45 Mins',
       recovery: 'Immediate',
       guarantee: '8+ Shades Brighter',
@@ -104,7 +104,7 @@ export const Treatments: React.FC = () => {
       tagline: 'Clear Aligners with AI Movement Telemetry',
       description:
         'Straighten crowded or gapped teeth discreetly using clear Medical Grade thermoplastic aligners generated from 3D intraoral scans.',
-      icon: <ShieldAlert className="w-6 h-6 text-[#4FC3F7]" />,
+      icon: <ShieldAlert className="w-6 h-6 text-[#0284C7]" />,
       duration: '6 - 12 Months',
       recovery: 'None',
       guarantee: 'Perfect Bite Alignment',
@@ -131,17 +131,17 @@ export const Treatments: React.FC = () => {
   };
 
   return (
-    <section id="treatments-section" className="relative py-28 px-6 bg-[#05070A]">
+    <section id="treatments-section" className="relative py-28 px-6 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4 border border-[#4FC3F7]/30 shadow-[0_0_15px_rgba(79,195,247,0.15)]">
+          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono font-bold text-[#0284C7] tracking-widest uppercase mb-4 border border-[#0284C7]/30 shadow-sm">
             PRECISION PROCEDURES
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight max-w-3xl leading-tight mb-4">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-3xl leading-tight mb-4">
             Advanced Clinical Treatments
           </h2>
-          <p className="text-slate-400 max-w-xl text-sm sm:text-base font-normal">
+          <p className="text-slate-600 max-w-xl text-sm sm:text-base font-normal">
             Every procedure is planned using 3D spatial scanning and executed with surgical robotic precision.
           </p>
         </div>
@@ -156,7 +156,7 @@ export const Treatments: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               onMouseEnter={() => soundFX.playHover()}
-              className="glass-card rounded-3xl p-6 flex flex-col justify-between group cursor-pointer border border-white/10 hover:border-[#4FC3F7]/40 relative overflow-hidden"
+              className="glass-card rounded-3xl p-6 flex flex-col justify-between group cursor-pointer border border-slate-200 hover:border-[#0284C7]/40 relative overflow-hidden shadow-lg"
               onClick={() => handleOpenModal(item)}
             >
               {/* Card Image Thumbnail */}
@@ -166,8 +166,8 @@ export const Treatments: React.FC = () => {
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05070A] via-transparent to-transparent opacity-80" />
-                <div className="absolute top-3 left-3 glass-panel px-3 py-1 rounded-full text-[10px] font-mono text-[#4FC3F7] border border-[#4FC3F7]/30">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/60 via-transparent to-transparent" />
+                <div className="absolute top-3 left-3 glass-panel px-3 py-1 rounded-full text-[10px] font-mono font-bold text-[#0284C7] border border-[#0284C7]/30">
                   {item.category}
                 </div>
               </div>
@@ -175,21 +175,21 @@ export const Treatments: React.FC = () => {
               {/* Title & Tagline */}
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-xl bg-white/5 border border-white/10">{item.icon}</div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-[#4FC3F7] transition-colors">
+                  <div className="p-2 rounded-xl bg-slate-100 border border-slate-200">{item.icon}</div>
+                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#0284C7] transition-colors">
                     {item.title}
                   </h3>
                 </div>
-                <p className="text-xs font-mono text-[#00E5FF] mb-3">{item.tagline}</p>
-                <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed mb-6">
+                <p className="text-xs font-mono font-bold text-[#00A3FF] mb-3">{item.tagline}</p>
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-6">
                   {item.description}
                 </p>
               </div>
 
               {/* Card Footer */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs font-mono font-semibold text-slate-400">{item.price}</span>
-                <span className="text-xs font-bold text-[#4FC3F7] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-slate-700">{item.price}</span>
+                <span className="text-xs font-bold text-[#0284C7] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                   View Protocol <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -201,80 +201,80 @@ export const Treatments: React.FC = () => {
       {/* Interactive Detail Modal */}
       <AnimatePresence>
         {selectedTreatment && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-xl">
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xl">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3 }}
-              className="glass-panel-glow max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-[#4FC3F7]/40 relative overflow-hidden max-h-[90vh] overflow-y-auto"
+              className="glass-panel-glow max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-[#0284C7]/40 relative overflow-hidden max-h-[90vh] overflow-y-auto shadow-2xl"
             >
               {/* Close Button */}
               <button
                 onClick={handleCloseModal}
-                className="absolute top-6 right-6 p-2 rounded-full glass-panel text-slate-400 hover:text-white border border-white/10"
+                className="absolute top-6 right-6 p-2 rounded-full glass-panel text-slate-500 hover:text-slate-900 border border-slate-200"
               >
                 <X className="w-5 h-5" />
               </button>
 
               {/* Modal Header */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-2xl bg-[#4FC3F7]/20 border border-[#4FC3F7]/40">
+                <div className="p-3 rounded-2xl bg-[#0284C7]/15 border border-[#0284C7]/30">
                   {selectedTreatment.icon}
                 </div>
                 <div>
-                  <span className="text-xs font-mono text-[#00E5FF] uppercase tracking-wider">
+                  <span className="text-xs font-mono font-bold text-[#0284C7] uppercase tracking-wider">
                     {selectedTreatment.category}
                   </span>
-                  <h3 className="text-2xl font-extrabold text-white">{selectedTreatment.title}</h3>
+                  <h3 className="text-2xl font-extrabold text-slate-900">{selectedTreatment.title}</h3>
                 </div>
               </div>
 
-              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+              <p className="text-slate-600 text-sm leading-relaxed mb-6">
                 {selectedTreatment.description}
               </p>
 
               {/* Key Spec Badges */}
               <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="glass-panel p-3 rounded-xl text-center border border-white/5">
-                  <Clock className="w-4 h-4 text-[#4FC3F7] mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-400 uppercase">Duration</span>
-                  <span className="text-xs font-bold text-white">{selectedTreatment.duration}</span>
+                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
+                  <Clock className="w-4 h-4 text-[#0284C7] mx-auto mb-1" />
+                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Duration</span>
+                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.duration}</span>
                 </div>
-                <div className="glass-panel p-3 rounded-xl text-center border border-white/5">
-                  <Activity className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-400 uppercase">Recovery</span>
-                  <span className="text-xs font-bold text-white">{selectedTreatment.recovery}</span>
+                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
+                  <Activity className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
+                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Recovery</span>
+                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.recovery}</span>
                 </div>
-                <div className="glass-panel p-3 rounded-xl text-center border border-white/5">
-                  <Award className="w-4 h-4 text-yellow-400 mx-auto mb-1" />
-                  <span className="block text-[10px] font-mono text-slate-400 uppercase">Guarantee</span>
-                  <span className="text-xs font-bold text-white">{selectedTreatment.guarantee}</span>
+                <div className="glass-panel p-3 rounded-xl text-center border border-slate-200">
+                  <Award className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Guarantee</span>
+                  <span className="text-xs font-bold text-slate-900">{selectedTreatment.guarantee}</span>
                 </div>
               </div>
 
               {/* Procedure Highlights */}
               <div className="space-y-2 mb-8">
-                <h4 className="text-xs font-mono text-[#4FC3F7] uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-mono font-bold text-[#0284C7] uppercase tracking-wider mb-2">
                   Clinical Protocol Highlights
                 </h4>
                 {selectedTreatment.features.map((feat, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs text-slate-200">
-                    <CheckCircle className="w-4 h-4 text-[#00E5FF] shrink-0" />
+                  <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
+                    <CheckCircle className="w-4 h-4 text-[#00A3FF] shrink-0" />
                     <span>{feat}</span>
                   </div>
                 ))}
               </div>
 
               {/* Action CTA */}
-              <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
                 <div>
-                  <span className="block text-[10px] font-mono text-slate-400 uppercase">Estimated Fee</span>
-                  <span className="text-xl font-bold font-mono text-[#4FC3F7]">{selectedTreatment.price}</span>
+                  <span className="block text-[10px] font-mono text-slate-500 uppercase">Estimated Fee</span>
+                  <span className="text-xl font-bold font-mono text-[#0284C7]">{selectedTreatment.price}</span>
                 </div>
                 <button
                   onClick={scrollToBooking}
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-[#4FC3F7] to-[#00E5FF] text-slate-950 font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(79,195,247,0.4)] hover:shadow-[0_0_30px_rgba(79,195,247,0.7)]"
+                  className="px-6 py-3 rounded-full bg-gradient-to-r from-[#0284C7] to-[#00A3FF] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg"
                 >
                   Schedule Consultation
                 </button>

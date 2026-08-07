@@ -29,17 +29,17 @@ export const BeforeAfterSlider: React.FC = () => {
   };
 
   return (
-    <section id="before-after-section" className="relative py-28 px-6 bg-[#05070A] overflow-hidden">
+    <section id="before-after-section" className="relative py-28 px-6 bg-[#F8FAFC] overflow-hidden border-t border-slate-200">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">
-          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4 border border-[#4FC3F7]/30 shadow-[0_0_15px_rgba(79,195,247,0.15)]">
+          <div className="glass-panel px-4 py-1.5 rounded-full text-xs font-mono font-bold text-[#0284C7] tracking-widest uppercase mb-4 border border-[#0284C7]/30 shadow-sm">
             CLINICAL CASE RESULTS
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight max-w-3xl leading-tight mb-4">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-3xl leading-tight mb-4">
             Interactive Smile Transformation
           </h2>
-          <p className="text-slate-400 max-w-xl text-sm sm:text-base font-normal">
+          <p className="text-slate-600 max-w-xl text-sm sm:text-base font-normal">
             Drag the handle horizontally to compare damaged enamel vs our 3D porcelain veneer restoration.
           </p>
         </div>
@@ -62,7 +62,7 @@ export const BeforeAfterSlider: React.FC = () => {
             onTouchStart={() => setIsDragging(true)}
             onTouchEnd={() => setIsDragging(false)}
             onTouchMove={handleTouchMove}
-            className="relative h-[400px] sm:h-[500px] w-full rounded-3xl overflow-hidden glass-panel border border-[#4FC3F7]/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] cursor-ew-resize select-none"
+            className="relative h-[400px] sm:h-[500px] w-full rounded-3xl overflow-hidden glass-panel border border-[#0284C7]/30 shadow-2xl cursor-ew-resize select-none"
           >
             {/* AFTER Image (Full Layer underneath) */}
             <img
@@ -70,7 +70,7 @@ export const BeforeAfterSlider: React.FC = () => {
               alt="Restored Smile After Treatment"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute top-6 right-6 z-10 glass-panel-glow px-4 py-2 rounded-full text-xs font-mono font-bold text-[#00E5FF] border border-[#00E5FF]/40 shadow-lg flex items-center gap-1.5">
+            <div className="absolute top-6 right-6 z-10 glass-panel-glow px-4 py-2 rounded-full text-xs font-mono font-bold text-[#0284C7] border border-[#0284C7]/40 shadow-lg flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> AFTER RESTORATION
             </div>
 
@@ -85,17 +85,17 @@ export const BeforeAfterSlider: React.FC = () => {
                 className="absolute inset-0 h-full max-w-none object-cover grayscale brightness-90 contrast-125"
                 style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%' }}
               />
-              <div className="absolute top-6 left-6 z-10 glass-panel px-4 py-2 rounded-full text-xs font-mono font-bold text-slate-300 border border-white/20 shadow-lg">
+              <div className="absolute top-6 left-6 z-10 glass-panel px-4 py-2 rounded-full text-xs font-mono font-bold text-slate-800 border border-slate-300 shadow-lg">
                 BEFORE DIAGNOSIS
               </div>
             </div>
 
             {/* Split Drag Handle Bar */}
             <div
-              className="absolute inset-y-0 z-20 w-1 bg-gradient-to-b from-[#4FC3F7] via-[#00E5FF] to-[#4FC3F7] shadow-[0_0_15px_#00E5FF]"
+              className="absolute inset-y-0 z-20 w-1 bg-gradient-to-b from-[#0284C7] via-[#00A3FF] to-[#0284C7] shadow-[0_0_15px_#0284C7]"
               style={{ left: `${sliderPosition}%` }}
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#05070A] border-2 border-[#00E5FF] flex items-center justify-center shadow-[0_0_20px_#00E5FF] text-[#00E5FF]">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white border-2 border-[#0284C7] flex items-center justify-center shadow-lg text-[#0284C7]">
                 <MoveHorizontal className="w-5 h-5" />
               </div>
             </div>
@@ -103,25 +103,25 @@ export const BeforeAfterSlider: React.FC = () => {
 
           {/* Case Specs Bar */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-[#4FC3F7] shrink-0" />
+            <div className="glass-card p-4 rounded-2xl border border-slate-200 flex items-center gap-3 shadow-sm">
+              <CheckCircle className="w-5 h-5 text-[#0284C7] shrink-0" />
               <div>
-                <span className="block text-[10px] font-mono text-slate-400 uppercase">PROCEDURE</span>
-                <span className="text-xs font-bold text-white">Full Arch 3D Porcelain Restoration</span>
+                <span className="block text-[10px] font-mono text-slate-500 uppercase font-semibold">PROCEDURE</span>
+                <span className="text-xs font-bold text-slate-900">Full Arch 3D Porcelain Restoration</span>
               </div>
             </div>
-            <div className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-[#00E5FF] shrink-0" />
+            <div className="glass-card p-4 rounded-2xl border border-slate-200 flex items-center gap-3 shadow-sm">
+              <CheckCircle className="w-5 h-5 text-[#00A3FF] shrink-0" />
               <div>
-                <span className="block text-[10px] font-mono text-slate-400 uppercase">TIMELINE</span>
-                <span className="text-xs font-bold text-white">2 Appointments • 10 Days Total</span>
+                <span className="block text-[10px] font-mono text-slate-500 uppercase font-semibold">TIMELINE</span>
+                <span className="text-xs font-bold text-slate-900">2 Appointments • 10 Days Total</span>
               </div>
             </div>
-            <div className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div className="glass-card p-4 rounded-2xl border border-slate-200 flex items-center gap-3 shadow-sm">
+              <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
               <div>
-                <span className="block text-[10px] font-mono text-slate-400 uppercase">SATISFACTION</span>
-                <span className="text-xs font-bold text-white">100% Patient Delight Rating</span>
+                <span className="block text-[10px] font-mono text-slate-500 uppercase font-semibold">SATISFACTION</span>
+                <span className="text-xs font-bold text-slate-900">100% Patient Delight Rating</span>
               </div>
             </div>
           </div>
