@@ -19,7 +19,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
 
-  // Pre-instantiate initial frame 0 immediately on mount
+  // Pre-instantiate initial frame 0 (ezgif-frame-001) immediately on mount
   useEffect(() => {
     const initialImg = new Image();
     initialImg.src = FRAME_MANIFEST[0].path;
@@ -39,7 +39,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     };
   }, []);
 
-  // Anti-Gravity 60 FPS Canvas Render Loop across all 1,199 frames
+  // Anti-Gravity 60 FPS Canvas Render Loop across all 284 frames
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -58,7 +58,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       const width = window.innerWidth;
       const height = window.innerHeight;
       const isMobile = width < 768;
-      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 2.0 : 2.5);
+      const dpr = Math.max(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
 
       if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
         canvas.width = Math.round(width * dpr);
@@ -85,7 +85,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Global Frame Calculation across all 1,199 frames
+      // 2. Exact 284 Frame Timeline Calculation
       const floatFrame = Math.max(0, Math.min(TOTAL_FRAMES - 1, scrollProgress * (TOTAL_FRAMES - 1)));
       const index1 = Math.floor(floatFrame);
       const index2 = Math.min(TOTAL_FRAMES - 1, index1 + 1);
@@ -105,6 +105,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         const naturalH = 'naturalHeight' in img1 ? img1.naturalHeight : (img1 as ImageBitmap).height;
 
         if (naturalW > 0) {
+          // Responsive Object-Fit: Contain (Preserves full jaw visibility, no cropping or stretching)
           const imgAspect = naturalW / naturalH;
           const screenAspect = width / height;
 
@@ -112,17 +113,17 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           let renderH = height;
 
           if (screenAspect > imgAspect) {
-            renderW = width;
-            renderH = width / imgAspect;
-          } else {
             renderH = height;
             renderW = height * imgAspect;
+          } else {
+            renderW = width;
+            renderH = width / imgAspect;
           }
 
           // Anti-Gravity Sinusoidal Floating Oscillation (Levitating suspended in 3D air)
           const now = Date.now();
-          const floatY = Math.sin(now * 0.0018) * 10;
-          const floatX = Math.cos(now * 0.0012) * 5;
+          const floatY = Math.sin(now * 0.0018) * 8;
+          const floatX = Math.cos(now * 0.0012) * 4;
 
           const offsetX = (width - renderW) / 2 + floatX;
           const offsetY = (height - renderH) / 2 + floatY;
@@ -146,7 +147,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // 5. Sub-Frame Alpha Crossfading for 60 FPS Liquid Continuity
+          // 5. Sub-Frame Alpha Crossfading for 60 FPS Cinematic Continuity
           if (img2 && blendAlpha > 0.001) {
             ctx.globalAlpha = blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
@@ -158,23 +159,23 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           if (currentStage === 2) {
             // Scene 02: Digital 3D Holographic CBCT Scan Line
             const scanY = (scrollProgress % 0.25) * 4 * height;
-            const scanGrad = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
+            const scanGrad = ctx.createLinearGradient(0, scanY - 40, 0, scanY + 40);
             scanGrad.addColorStop(0, 'rgba(0, 163, 255, 0)');
-            scanGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.35)');
+            scanGrad.addColorStop(0.5, 'rgba(0, 163, 255, 0.3)');
             scanGrad.addColorStop(1, 'rgba(0, 163, 255, 0)');
             ctx.fillStyle = scanGrad;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage === 3) {
             // Scene 03: Orthodontic & Laser Glow Pulse
-            const pulse = (Math.sin(now * 0.007) + 1) * 0.08;
+            const pulse = (Math.sin(now * 0.007) + 1) * 0.06;
             ctx.fillStyle = `rgba(2, 132, 199, ${pulse})`;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage >= 4) {
             // Scene 04 & Final Living Background: Diamond Enamel Specular Glint Sweep
-            const sweepX = (now * 0.4) % (width * 2.2) - width * 0.2;
-            const glintGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 160, height);
+            const sweepX = (now * 0.35) % (width * 2.2) - width * 0.2;
+            const glintGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 140, height);
             glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            glintGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.28)');
+            glintGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.22)');
             glintGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.fillStyle = glintGrad;
             ctx.fillRect(0, 0, width, height);
