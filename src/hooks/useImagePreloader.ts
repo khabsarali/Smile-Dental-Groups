@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const TOTAL_FRAMES = 170;
+const TOTAL_FRAMES = 150;
 
 export function useImagePreloader() {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
