@@ -44,7 +44,7 @@ export const AppointmentBooking: React.FC = () => {
   };
 
   return (
-    <section id="booking-section" className="relative py-28 px-6 bg-[#F8FAFC] overflow-hidden border-t border-slate-200">
+    <section id="booking-section" className="relative py-28 px-6 bg-[#F8FAFC]/80 backdrop-blur-xl overflow-hidden border-t border-slate-200/60">
       {/* Background Glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#0284C7]/5 rounded-full blur-[160px] pointer-events-none" />
 

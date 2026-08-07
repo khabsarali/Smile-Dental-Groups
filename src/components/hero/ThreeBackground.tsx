@@ -105,7 +105,7 @@ function HolographicHUD({ stage }: { stage: number }) {
 
 export const ThreeBackground: React.FC<ThreeOverlayProps> = ({ stage, progress }) => {
   return (
-    <div className="absolute inset-0 pointer-events-none z-10">
+    <div className="fixed inset-0 pointer-events-none z-0">
       <Canvas
         dpr={[1, 2.0]}
         camera={{ position: [0, 0, 5], fov: 60 }}

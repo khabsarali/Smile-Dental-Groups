@@ -131,7 +131,7 @@ export const Treatments: React.FC = () => {
   };
 
   return (
-    <section id="treatments-section" className="relative py-28 px-6 bg-[#F8FAFC]">
+    <section id="treatments-section" className="relative py-28 px-6 bg-[#F8FAFC]/80 backdrop-blur-xl border-t border-slate-200/60">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16">

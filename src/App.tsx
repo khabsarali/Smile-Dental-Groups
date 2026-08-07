@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -27,7 +27,8 @@ gsap.registerPlugin(ScrollTrigger);
 export function App() {
   const { images, loadedCount, totalCount, progress, isLoaded, ensureFrameLoaded } = useImagePreloader();
   const [currentStage, setCurrentStage] = useState<number>(1);
-  const [heroProgress, setHeroProgress] = useState<number>(0);
+  const [globalScrollProgress, setGlobalScrollProgress] = useState<number>(0);
+  const pageContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize Lenis Smooth Scroll Engine & Sync with GSAP ScrollTrigger
   useEffect(() => {
@@ -51,14 +52,43 @@ export function App() {
     };
   }, []);
 
-  const handleStageChange = (stage: number, prog: number) => {
-    setCurrentStage(stage);
-    setHeroProgress(prog);
-  };
+  // Global Document ScrollTrigger mapping 0% (top) to 100% (bottom of page)
+  useEffect(() => {
+    if (!pageContainerRef.current) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: pageContainerRef.current,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.05,
+      onUpdate: (self) => {
+        const prog = self.progress;
+        setGlobalScrollProgress(prog);
+
+        // Map global page scroll to 5 scenes
+        let stage = 1;
+        if (prog < 0.2) stage = 1;
+        else if (prog < 0.4) stage = 2;
+        else if (prog < 0.6) stage = 3;
+        else if (prog < 0.8) stage = 4;
+        else stage = 5;
+
+        setCurrentStage(stage);
+      },
+    });
+
+    return () => {
+      trigger.kill();
+    };
+  }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-[#0284C7] selection:text-white">
-      {/* High-Tech Cyber Preloader */}
+    <div
+      id="global-page-container"
+      ref={pageContainerRef}
+      className="relative min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
+    >
+      {/* High-Tech Preloader */}
       <Preloader
         progress={progress}
         loadedCount={loadedCount}
@@ -69,29 +99,29 @@ export function App() {
       {/* Laser Precision Custom Cursor */}
       <CustomCursor />
 
-      {/* Global Glass Header Navbar */}
+      {/* Global Header Navbar */}
       <Navbar />
 
-      {/* Hero Section Container */}
-      <div className="relative w-full">
-        {/* Scroll-Driven Master Canvas Sequence */}
-        <HeroSequenceCanvas
-          images={images}
-          onStageChange={handleStageChange}
-          ensureFrameLoaded={ensureFrameLoaded}
-        />
+      {/* Fixed Full-Screen Global 3D Background Canvas Layer */}
+      <HeroSequenceCanvas
+        images={images}
+        scrollProgress={globalScrollProgress}
+        currentStage={currentStage}
+        ensureFrameLoaded={ensureFrameLoaded}
+      />
 
-        {/* R3F 3D Laser & Particle Overlay */}
-        <ThreeBackground stage={currentStage} progress={heroProgress} />
+      {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
+      <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
 
-        {/* Synchronized Headline HUD Overlays */}
-        <HeroOverlayText stage={currentStage} progress={heroProgress} />
+      {/* Fixed Side Rail Stage Indicator */}
+      <StageIndicator currentStage={currentStage} progress={globalScrollProgress} />
 
-        {/* Side Rail Stage Progress Indicator */}
-        <StageIndicator currentStage={currentStage} progress={heroProgress} />
+      {/* Hero Overview Viewport Section */}
+      <div id="hero-container" className="relative w-full min-h-screen z-20">
+        <HeroOverlayText stage={currentStage} progress={globalScrollProgress} />
       </div>
 
-      {/* Content Sections */}
+      {/* Translucent Content Sections Overlaying 3D Background */}
       <main className="relative z-20">
         <AboutClinic />
         <Treatments />
@@ -102,8 +132,10 @@ export function App() {
         <AppointmentBooking />
       </main>
 
-      {/* Luxury Minimal Footer */}
-      <Footer />
+      {/* Luxury Footer */}
+      <div className="relative z-20">
+        <Footer />
+      </div>
     </div>
   );
 }

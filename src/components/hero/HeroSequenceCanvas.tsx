@@ -1,25 +1,20 @@
-import React, { useRef, useEffect, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useRef, useEffect } from 'react';
 import { FrameAsset } from '../../hooks/useImagePreloader';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface HeroSequenceCanvasProps {
   images: (FrameAsset | null)[];
-  onStageChange?: (stage: number, progress: number) => void;
+  scrollProgress: number;
+  currentStage: number;
   ensureFrameLoaded?: (index: number) => void;
 }
 
 export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   images,
-  onStageChange,
+  scrollProgress,
+  currentStage,
   ensureFrameLoaded,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const [currentStage, setCurrentStage] = useState<number>(1);
   const isTabVisibleRef = useRef<boolean>(true);
 
   // Handle document tab visibility change (Pause canvas rendering when hidden)
@@ -32,48 +27,6 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
-
-  // Set up GSAP ScrollTrigger to pin container and track scroll progress
-  useEffect(() => {
-    if (!containerRef.current || images.length === 0) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    const trigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: prefersReducedMotion ? true : 0.05, // instant or snappy scrub
-      onUpdate: (self) => {
-        const prog = self.progress;
-        setScrollProgress(prog);
-
-        // Determine current scene (1 to 5)
-        let stage = 1;
-        if (prog < 0.2) stage = 1;
-        else if (prog < 0.4) stage = 2;
-        else if (prog < 0.6) stage = 3;
-        else if (prog < 0.8) stage = 4;
-        else stage = 5;
-
-        setCurrentStage(stage);
-        if (onStageChange) {
-          onStageChange(stage, prog);
-        }
-      },
-    });
-
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      trigger.kill();
-    };
-  }, [images, onStageChange]);
 
   // Canvas drawing loop with sub-frame alpha crossfading & high resolution
   useEffect(() => {
@@ -229,17 +182,13 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   }, [scrollProgress, currentStage, images, ensureFrameLoaded]);
 
   return (
-    <div id="hero-container" ref={containerRef} className="relative w-full h-[500vh]">
-      {/* Sticky Fullscreen Canvas Viewport */}
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#05080E]">
-        <canvas
-          ref={canvasRef}
-          className="w-full h-full block select-none"
-        />
-
-        {/* Ambient Dark-to-Light Gradient Overlays */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#F8FAFC]/90 via-transparent to-[#05080E]/40" />
-      </div>
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#05080E]">
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full block select-none"
+      />
+      {/* Ambient Dark-to-Light Gradient Overlays */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#F8FAFC]/90 via-transparent to-[#05080E]/40" />
     </div>
   );
 };
