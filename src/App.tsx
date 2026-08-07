@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { useImagePreloader } from './hooks/useImagePreloader';
-import { Preloader } from './ui/Preloader';
 import { CustomCursor } from './ui/CustomCursor';
 import { Navbar } from './ui/Navbar';
 
@@ -33,7 +32,7 @@ gsap.registerPlugin(ScrollTrigger);
 export type PageId = 'home' | 'about' | 'services' | 'gallery' | 'appointment';
 
 export function App() {
-  const { loadedCount, totalCount, progress, isLoaded, loadingStage, ensureFrameLoaded, getCachedFrame } = useImagePreloader();
+  const { ensureFrameLoaded, getCachedFrame } = useImagePreloader();
   const [currentPage, setCurrentPage] = useState<PageId>('home');
   const [currentStage, setCurrentStage] = useState<number>(1);
   const [globalScrollProgress, setGlobalScrollProgress] = useState<number>(0);
@@ -108,15 +107,6 @@ export function App() {
       ref={pageContainerRef}
       className="relative min-h-screen bg-[#05080E] text-slate-900 selection:bg-[#0284C7] selection:text-white overflow-x-hidden"
     >
-      {/* SECTION 1: High-Tech Preloader with Progression States */}
-      <Preloader
-        progress={progress}
-        loadedCount={loadedCount}
-        totalCount={totalCount}
-        isLoaded={isLoaded}
-        loadingStage={loadingStage}
-      />
-
       {/* Laser Precision Custom Cursor */}
       <CustomCursor />
 
