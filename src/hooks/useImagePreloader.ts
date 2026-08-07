@@ -16,8 +16,8 @@ export const SCENES_CONFIG: SceneMeta[] = [
 ];
 
 export const TOTAL_ANIMATION_FRAMES = 1199;
-const INITIAL_PRELOAD_COUNT = 15;
-const STREAMING_BUFFER_WINDOW = 16;
+const INITIAL_PRELOAD_COUNT = 3;
+const STREAMING_BUFFER_WINDOW = 20;
 
 export function useImagePreloader() {
   const [loadedCount, setLoadedCount] = useState<number>(0);
