@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { FrameAsset, TOTAL_KEYFRAMES, OPTIMIZED_KEYFRAMES } from '../../hooks/useImagePreloader';
+import { FrameAsset } from '../../hooks/useImagePreloader';
+import { TOTAL_FRAMES, FRAME_MANIFEST } from '../../engine/FrameManifest';
 
 interface HeroSequenceCanvasProps {
   scrollProgress: number;
@@ -18,10 +19,10 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
   const isTabVisibleRef = useRef<boolean>(true);
   const lastDrawnFrameRef = useRef<FrameAsset | null>(null);
 
-  // Pre-instantiate initial frame immediately on mount
+  // Pre-instantiate initial frame 0 immediately on mount
   useEffect(() => {
     const initialImg = new Image();
-    initialImg.src = OPTIMIZED_KEYFRAMES[0].path;
+    initialImg.src = FRAME_MANIFEST[0].path;
     initialImg.onload = () => {
       lastDrawnFrameRef.current = initialImg;
     };
@@ -38,7 +39,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
     };
   }, []);
 
-  // Anti-Gravity 60 FPS Canvas Render Loop
+  // Anti-Gravity 60 FPS Canvas Render Loop across all 1,199 frames
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -84,13 +85,13 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Optimized Keyframe Calculation across 140 selected keyframes
-      const floatFrame = Math.max(0, Math.min(TOTAL_KEYFRAMES - 1, scrollProgress * (TOTAL_KEYFRAMES - 1)));
+      // 2. Global Frame Calculation across all 1,199 frames
+      const floatFrame = Math.max(0, Math.min(TOTAL_FRAMES - 1, scrollProgress * (TOTAL_FRAMES - 1)));
       const index1 = Math.floor(floatFrame);
-      const index2 = Math.min(TOTAL_KEYFRAMES - 1, index1 + 1);
+      const index2 = Math.min(TOTAL_FRAMES - 1, index1 + 1);
       const blendAlpha = floatFrame - index1;
 
-      // Stream upcoming keyframes in background ahead of scroll
+      // Stream upcoming lookahead frames in background ahead of scroll
       if (ensureFrameLoaded) {
         ensureFrameLoaded(index1);
       }
@@ -118,7 +119,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             renderW = height * imgAspect;
           }
 
-          // Anti-Gravity Sinusoidal Floating Oscillation
+          // Anti-Gravity Sinusoidal Floating Oscillation (Levitating suspended in 3D air)
           const now = Date.now();
           const floatY = Math.sin(now * 0.0018) * 10;
           const floatX = Math.cos(now * 0.0012) * 5;
@@ -145,13 +146,13 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // 5. Crossfade Frame for 60 FPS Liquid Motion
+          // 5. Sub-Frame Alpha Crossfading for 60 FPS Liquid Continuity
           if (img2 && blendAlpha > 0.001) {
             ctx.globalAlpha = blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
           }
 
-          // 6. Cinematic Lighting & Specular Glints
+          // 6. Cinematic Stage Lighting & Specular Enamel Sweeps
           ctx.globalAlpha = 1.0;
 
           if (currentStage === 2) {
@@ -169,7 +170,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             ctx.fillStyle = `rgba(2, 132, 199, ${pulse})`;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage >= 4) {
-            // Scene 04 & 05: Diamond Enamel Specular Glint Sweep
+            // Scene 04 & Final Living Background: Diamond Enamel Specular Glint Sweep
             const sweepX = (now * 0.4) % (width * 2.2) - width * 0.2;
             const glintGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 160, height);
             glintGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
