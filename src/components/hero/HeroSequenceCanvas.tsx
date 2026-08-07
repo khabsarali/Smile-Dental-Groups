@@ -104,14 +104,9 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           // Subtle 3D floating suspension oscillation (8px amplitude)
           const floatY = Math.sin(Date.now() * 0.0016) * 8;
 
-          // Base Centered position
+          // Base Centered position for full-screen cover mode
           let offsetX = (width - renderW) / 2;
           let offsetY = (height - renderH) / 2 + floatY;
-
-          // Position 3D jaw animation strictly on the RIGHT 65% of viewport width on Desktop
-          if (isDesktop) {
-            offsetX += renderW * 0.18;
-          }
 
           // 1. Draw Soft Radial Ground Shadow beneath Floating Jaw
           const shadowX = offsetX + renderW / 2;
