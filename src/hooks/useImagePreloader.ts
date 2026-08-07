@@ -9,13 +9,13 @@ export interface KeyframeInfo {
   path: string;
 }
 
-// Exactly 120 keyframes (30 per scene) capturing all essential motion & transformation milestones
+// Exactly 200 keyframes (50 per scene) across all 4 scenes from top to end
 function generateKeyframes(): KeyframeInfo[] {
   const scenes = [
-    { id: 1, folder: 'scene-1', total: 300, count: 30 }, // Scene 1: Damaged Jaw rotation
-    { id: 2, folder: 'scene-2', total: 299, count: 30 }, // Scene 2: 3D Digital X-Ray scan
-    { id: 3, folder: 'scene-3', total: 300, count: 30 }, // Scene 3: Orthodontic aligners & laser
-    { id: 4, folder: 'scene-4', total: 282, count: 30 }, // Scene 4: Healthy teeth & final smile reveal
+    { id: 1, folder: 'scene-1', total: 300, count: 50 }, // Scene 1: 50 keyframes (Damaged Jaw rotation)
+    { id: 2, folder: 'scene-2', total: 299, count: 50 }, // Scene 2: 50 keyframes (Digital X-Ray scan)
+    { id: 3, folder: 'scene-3', total: 300, count: 50 }, // Scene 3: 50 keyframes (Orthodontic braces & laser)
+    { id: 4, folder: 'scene-4', total: 282, count: 50 }, // Scene 4: 50 keyframes (Healthy enamel & final smile reveal)
   ];
 
   const keyframes: KeyframeInfo[] = [];
@@ -41,11 +41,11 @@ function generateKeyframes(): KeyframeInfo[] {
 }
 
 export const OPTIMIZED_KEYFRAMES: KeyframeInfo[] = generateKeyframes();
-export const TOTAL_KEYFRAMES = OPTIMIZED_KEYFRAMES.length; // Exactly 120 keyframes
+export const TOTAL_KEYFRAMES = OPTIMIZED_KEYFRAMES.length; // Exactly 200 keyframes
 const INITIAL_PRELOAD_REQUIRED = 5;
-const MAX_CONCURRENT_CACHE = 24; // Sliding window buffer size (Memory capped < 25MB)
-const LOOKAHEAD_WINDOW = 10;
-const LOOKBEHIND_WINDOW = 4;
+const MAX_CONCURRENT_CACHE = 28; // Sliding window buffer size (Memory capped < 30MB)
+const LOOKAHEAD_WINDOW = 14;
+const LOOKBEHIND_WINDOW = 5;
 
 export function useImagePreloader() {
   const [loadedCount, setLoadedCount] = useState<number>(0);
@@ -55,7 +55,7 @@ export function useImagePreloader() {
   const loadingQueueRef = useRef<Set<number>>(new Set());
   const lastActiveIndexRef = useRef<number>(0);
 
-  // Evict distant frames to keep memory consumption under 25MB
+  // Evict distant frames to keep memory consumption under 30MB
   const evictDistantFrames = useCallback((currentIndex: number) => {
     lastActiveIndexRef.current = currentIndex;
     if (cacheRef.current.size <= MAX_CONCURRENT_CACHE) return;
@@ -67,8 +67,7 @@ export function useImagePreloader() {
       if (protectedIndices.has(idx)) continue;
 
       const distance = Math.abs(idx - currentIndex);
-      if (distance > 14) {
-        // Close ImageBitmap if supported to free GPU memory
+      if (distance > 18) {
         if ('close' in asset && typeof (asset as ImageBitmap).close === 'function') {
           try {
             (asset as ImageBitmap).close();
@@ -159,14 +158,14 @@ export function useImagePreloader() {
     }
   }, [loadSingleKeyframe, evictDistantFrames]);
 
-  // Retrieve cached keyframe with nearest-neighbor fallback (Never blank)
+  // Retrieve cached keyframe with nearest-neighbor fallback (Never blank screen)
   const getCachedFrame = useCallback((keyframeIndex: number): FrameAsset | null => {
     if (cacheRef.current.has(keyframeIndex)) {
       return cacheRef.current.get(keyframeIndex)!;
     }
 
     // Nearest fallback search
-    for (let offset = 1; offset <= 8; offset++) {
+    for (let offset = 1; offset <= 10; offset++) {
       if (cacheRef.current.has(keyframeIndex - offset)) {
         return cacheRef.current.get(keyframeIndex - offset)!;
       }
@@ -178,7 +177,7 @@ export function useImagePreloader() {
     return cacheRef.current.get(0) || null;
   }, []);
 
-  // Initial Preload: Only first 5 keyframes to launch in < 0.6s
+  // Initial Preload: Only first 5 keyframes to launch in < 0.3s
   useEffect(() => {
     let isMounted = true;
     let loaded = 0;
@@ -206,7 +205,7 @@ export function useImagePreloader() {
       await Promise.all(initialPromises);
 
       // Background progressive streaming of remaining Scene 1 frames
-      for (let i = INITIAL_PRELOAD_REQUIRED; i < 20; i++) {
+      for (let i = INITIAL_PRELOAD_REQUIRED; i < 30; i++) {
         if (!isMounted) break;
         await loadSingleKeyframe(i);
       }
@@ -223,7 +222,7 @@ export function useImagePreloader() {
 
   return {
     loadedCount,
-    totalCount: TOTAL_KEYFRAMES,
+    totalCount: TOTAL_KEYFRAMES, // Exactly 200 keyframes
     progress,
     isLoaded,
     loadingStage,
