@@ -89,22 +89,29 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           const imgAspect = naturalW / naturalH;
           const screenAspect = width / height;
 
-          let renderW = width;
-          let renderH = height;
-          let offsetX = 0;
-          let offsetY = 0;
+          // Responsive scale factor: Desktop (100%), Tablet (~80%), Mobile (~55-65%)
+          const scaleFactor =
+            width < 480
+              ? 0.58
+              : width < 768
+              ? 0.65
+              : width < 1024
+              ? 0.80
+              : 1.0;
+
+          let renderW = width * scaleFactor;
+          let renderH = height * scaleFactor;
 
           if (screenAspect > imgAspect) {
-            renderW = width;
-            renderH = width / imgAspect;
-            offsetX = 0;
-            offsetY = (height - renderH) / 2;
+            renderH = height * scaleFactor;
+            renderW = renderH * imgAspect;
           } else {
-            renderH = height;
-            renderW = height * imgAspect;
-            offsetX = (width - renderW) / 2;
-            offsetY = 0;
+            renderW = width * scaleFactor;
+            renderH = renderW / imgAspect;
           }
+
+          const offsetX = (width - renderW) / 2;
+          const offsetY = (height - renderH) / 2;
 
           // Base frame (img1)
           ctx.globalAlpha = 1.0;
