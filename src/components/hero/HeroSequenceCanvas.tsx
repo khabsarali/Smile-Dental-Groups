@@ -49,6 +49,7 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       const width = window.innerWidth;
       const height = window.innerHeight;
       const isMobile = width < 768;
+      const isDesktop = width >= 1024;
       const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.0);
 
       if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
@@ -81,7 +82,6 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
       const img2 = images[index2] || img1;
 
       if (img1) {
-        // Scale images to full-screen cover mode
         const naturalW = 'naturalWidth' in img1 ? img1.naturalWidth : (img1 as ImageBitmap).width;
         const naturalH = 'naturalHeight' in img1 ? img1.naturalHeight : (img1 as ImageBitmap).height;
 
@@ -92,34 +92,67 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
           // Full-Screen Cover Scaling Mode across the entire background
           let renderW = width;
           let renderH = height;
-          let offsetX = 0;
-          let offsetY = 0;
 
           if (screenAspect > imgAspect) {
-            // Viewport is wider than image -> fit width, crop top/bottom
             renderW = width;
             renderH = width / imgAspect;
-            offsetX = 0;
-            offsetY = (height - renderH) / 2;
           } else {
-            // Viewport is taller than image -> fit height, crop left/right
             renderH = height;
             renderW = height * imgAspect;
-            offsetX = (width - renderW) / 2;
-            offsetY = 0;
           }
 
-          // Base frame (img1)
+          // Subtle 3D floating suspension oscillation (8px amplitude)
+          const floatY = Math.sin(Date.now() * 0.0016) * 8;
+
+          // Base Centered position
+          let offsetX = (width - renderW) / 2;
+          let offsetY = (height - renderH) / 2 + floatY;
+
+          // On Desktop (1024px+), shift jaw horizontally opposite to text alignment for 100% jaw visibility!
+          if (isDesktop) {
+            const isRightText = currentStage % 2 === 0;
+            if (isRightText) {
+              // Text is on the RIGHT -> Shift jaw to the LEFT
+              offsetX -= renderW * 0.12;
+            } else {
+              // Text is on the LEFT -> Shift jaw to the RIGHT
+              offsetX += renderW * 0.12;
+            }
+          }
+
+          // 1. Draw Soft Radial Ground Shadow beneath Floating Jaw
+          const shadowX = offsetX + renderW / 2;
+          const shadowY = offsetY + renderH * 0.88;
+          const shadowGrad = ctx.createRadialGradient(
+            shadowX,
+            shadowY,
+            renderW * 0.05,
+            shadowX,
+            shadowY,
+            renderW * 0.35
+          );
+          shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.45)');
+          shadowGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.15)');
+          shadowGrad.addColorStop(1, 'rgba(5, 8, 14, 0)');
+
+          ctx.save();
+          ctx.fillStyle = shadowGrad;
+          ctx.beginPath();
+          ctx.ellipse(shadowX, shadowY, renderW * 0.35, renderH * 0.08, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // 2. Base frame (img1)
           ctx.globalAlpha = 1.0;
           ctx.drawImage(img1 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
 
-          // Blend frame (img2) for liquid continuous transition
+          // 3. Blend frame (img2) for liquid continuous transition
           if (img2 && blendAlpha > 0.001) {
             ctx.globalAlpha = blendAlpha;
             ctx.drawImage(img2 as CanvasImageSource, offsetX, offsetY, renderW, renderH);
           }
 
-          // Apply Scene-specific canvas volumetric lighting & scan FX
+          // 4. Apply Scene-specific volumetric lighting, scan lines & enamel specular sweeps
           ctx.globalAlpha = 1.0;
 
           if (currentStage === 2) {
@@ -147,26 +180,26 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
             ctx.fillStyle = `rgba(2, 132, 199, ${laserPulse})`;
             ctx.fillRect(0, 0, width, height);
           } else if (currentStage === 4 || currentStage === 5) {
-            // Scene 4 Polishing Light Sweep Effect
-            const sweepX = (Date.now() * 0.3) % (width * 2) - width;
-            const sweepGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 200, height);
+            // Specular Enamel Diamond Light Sweep
+            const sweepX = (Date.now() * 0.35) % (width * 2) - width;
+            const sweepGrad = ctx.createLinearGradient(sweepX, 0, sweepX + 180, height);
             sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-            sweepGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
+            sweepGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.18)');
             sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.fillStyle = sweepGrad;
             ctx.fillRect(0, 0, width, height);
 
-            // Soft Radial Studio Vignette
+            // Soft Studio Ambient Lighting Vignette
             const radGrad = ctx.createRadialGradient(
               width / 2,
               height / 2,
-              width * 0.2,
+              width * 0.25,
               width / 2,
               height / 2,
-              width * 0.75
+              width * 0.8
             );
             radGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-            radGrad.addColorStop(1, 'rgba(5, 8, 14, 0.65)');
+            radGrad.addColorStop(1, 'rgba(5, 8, 14, 0.55)');
             ctx.fillStyle = radGrad;
             ctx.fillRect(0, 0, width, height);
           }
