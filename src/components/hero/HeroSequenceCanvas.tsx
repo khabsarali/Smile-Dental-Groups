@@ -94,28 +94,27 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({ images, 
       const img2 = images[index2];
 
       if (img1 && img1.complete && img1.naturalWidth > 0) {
-        // Proportionally scale images using contain logic so the entire jaw is always visible
+        // Scale images to full-screen cover mode
         const imgAspect = img1.naturalWidth / img1.naturalHeight;
         const screenAspect = width / height;
 
-        // Dynamic scale factor for padding on smaller screens
-        const scaleFactor = width < 768 ? 0.90 : width < 1024 ? 0.94 : 0.98;
-
-        let renderW = width * scaleFactor;
-        let renderH = height * scaleFactor;
-        let offsetX = (width - renderW) / 2;
-        let offsetY = (height - renderH) / 2;
+        let renderW = width;
+        let renderH = height;
+        let offsetX = 0;
+        let offsetY = 0;
 
         if (screenAspect > imgAspect) {
-          renderH = height * scaleFactor;
-          renderW = renderH * imgAspect;
-          offsetX = (width - renderW) / 2;
+          // Viewport is wider than image aspect ratio -> fit width, crop top/bottom
+          renderW = width;
+          renderH = width / imgAspect;
+          offsetX = 0;
           offsetY = (height - renderH) / 2;
         } else {
-          renderW = width * scaleFactor;
-          renderH = renderW / imgAspect;
+          // Viewport is taller than image aspect ratio -> fit height, crop left/right
+          renderH = height;
+          renderW = height * imgAspect;
           offsetX = (width - renderW) / 2;
-          offsetY = (height - renderH) / 2;
+          offsetY = 0;
         }
 
         // Base frame (img1)
