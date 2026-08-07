@@ -9,6 +9,7 @@ import { Navbar } from './ui/Navbar';
 
 import { HeroSequenceCanvas } from './components/hero/HeroSequenceCanvas';
 import { ThreeBackground } from './components/hero/ThreeBackground';
+import { HeroHUD } from './components/hero/HeroHUD';
 import { Footer } from './components/sections/Footer';
 
 import { WelcomeSection } from './components/sections/WelcomeSection';
@@ -123,6 +124,11 @@ export function App() {
 
       {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
       <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
+
+      {/* Interactive Apple-Quality HUD Telemetry (Active during 3D scroll narrative) */}
+      {currentPage === 'home' && globalScrollProgress < 0.95 && (
+        <HeroHUD scrollProgress={globalScrollProgress} currentStage={currentStage} />
+      )}
 
       {/* Page Routing */}
       {currentPage === 'home' && (
