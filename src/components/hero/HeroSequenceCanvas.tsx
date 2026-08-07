@@ -194,8 +194,6 @@ export const HeroSequenceCanvas: React.FC<HeroSequenceCanvasProps> = ({
         ref={canvasRef}
         className="w-full h-full block select-none"
       />
-      {/* Ambient Dark-to-Light Gradient Overlays */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#F8FAFC]/90 via-transparent to-[#05080E]/40" />
     </div>
   );
 };
