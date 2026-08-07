@@ -92,8 +92,14 @@ export function App() {
   }, [currentPage]);
 
   const handleNavigate = (page: string) => {
-    setCurrentPage(page as PageId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // If on homepage and a section ID is clicked, smooth scroll to it
+    const element = document.getElementById(page);
+    if (element && currentPage === 'home') {
+      element.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      setCurrentPage(page as PageId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -116,65 +122,101 @@ export function App() {
       {/* Global Header Navbar */}
       <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
 
+      {/* FIXED PERMANENT LIVING 3D BACKGROUND (Stays alive & visible behind entire website) */}
+      <HeroSequenceCanvas
+        scrollProgress={globalScrollProgress}
+        currentStage={currentStage}
+        ensureFrameLoaded={ensureFrameLoaded}
+        getCachedFrame={getCachedFrame}
+      />
+
+      {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
+      <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
+
       {/* Page Routing */}
       {currentPage === 'home' && (
         <>
-          {/* SECTION 2: Fixed Fullscreen Anti-Gravity 3D Story Canvas (1199 Master Frames) */}
-          <HeroSequenceCanvas
-            scrollProgress={globalScrollProgress}
-            currentStage={currentStage}
-            ensureFrameLoaded={ensureFrameLoaded}
-            getCachedFrame={getCachedFrame}
-          />
+          {/* INITIAL EXPERIENCE: 100% Unobstructed Fullscreen 3D Scroll Journey Viewport */}
+          <div id="hero-journey-viewport" className="relative w-full h-[500vh] z-20 pointer-events-none" />
 
-          {/* Fixed Full-Screen R3F 3D Particle & Laser Overlay */}
-          <ThreeBackground stage={currentStage} progress={globalScrollProgress} />
+          {/* POST-ANIMATION CONTENT FLOW: Floating Glassmorphism Cards Over Living 3D Background */}
+          <main className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 space-y-24 py-16 transition-all duration-700">
+            {/* 1. About the Clinic (Floating Glassmorphic Card) */}
+            <div id="about" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <AboutClinic />
+            </div>
 
-          {/* Clean 3D Scroll Journey Viewport (100% Unobstructed Anti-Gravity Animation) */}
-          <div id="hero-container" className="relative w-full h-[500vh] z-20 pointer-events-none" />
+            {/* 2. Our Philosophy & Welcome Section */}
+            <div id="welcome" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <WelcomeSection onNavigate={handleNavigate} />
+            </div>
 
-          {/* Post-Animation Homepage Flow (Begins Immediately After Final Smile Reveal) */}
-          <main className="relative z-30 bg-white shadow-[0_-20px_50px_rgba(15,23,42,0.15)] transition-all duration-700">
-            {/* SECTION 3: Welcome to Home of Smiles Dental */}
-            <WelcomeSection onNavigate={handleNavigate} />
+            {/* 3. Why Choose Us & Modern Technology */}
+            <div id="why-choose-us" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <WhyChooseUs />
+            </div>
 
-            {/* SECTION 4: Comprehensive Services (Implants, Veneers, Orthodontics, Emergency) */}
-            <Treatments />
+            {/* 4. Comprehensive Treatments (Implants, Veneers, Orthodontics, Emergency) */}
+            <div id="services" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <Treatments />
+            </div>
 
-            {/* SECTION 5: Why Choose Us & Modern Technology */}
-            <WhyChooseUs />
+            {/* 5. Our Dental Specialists & Doctors */}
+            <div id="team" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <OurTeam />
+            </div>
 
-            {/* SECTION 6: About the Clinic */}
-            <AboutClinic />
+            {/* 6. Before & After Results Slider */}
+            <div id="gallery" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <BeforeAfterSlider />
+            </div>
 
-            {/* SECTION 7: Our Dental Specialists */}
-            <OurTeam />
+            {/* 7. Treatment Journey Timeline */}
+            <div id="journey" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <TreatmentTimeline />
+            </div>
 
-            {/* SECTION 8: Before & After Results */}
-            <BeforeAfterSlider />
+            {/* 8. 5-Star Patient Reviews & Google Testimonials */}
+            <div id="reviews" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <ReviewsSection />
+            </div>
 
-            {/* SECTION 9: Treatment Journey Timeline */}
-            <TreatmentTimeline />
+            {/* 9. Frequently Asked Questions Accordion */}
+            <div id="faq" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <FAQSection />
+            </div>
 
-            {/* SECTION 10: 5-Star Patient Reviews & Testimonials */}
-            <ReviewsSection />
-
-            {/* SECTION 11: Frequently Asked Questions */}
-            <FAQSection />
-
-            {/* SECTION 12: Book an Appointment & Contact Information */}
-            <ContactSection />
+            {/* 10. Book an Appointment & Contact Details */}
+            <div id="appointment" className="glass-card rounded-[2.5rem] p-4 sm:p-8 border border-white/30 backdrop-blur-2xl bg-white/80 shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+              <ContactSection />
+            </div>
           </main>
         </>
       )}
 
-      {currentPage === 'about' && <AboutPage />}
-      {currentPage === 'services' && <ServicesPage />}
-      {currentPage === 'gallery' && <GalleryPage />}
-      {currentPage === 'appointment' && <AppointmentPage />}
+      {currentPage === 'about' && (
+        <div className="relative z-30 pt-20 max-w-7xl mx-auto px-4 sm:px-6">
+          <AboutPage />
+        </div>
+      )}
+      {currentPage === 'services' && (
+        <div className="relative z-30 pt-20 max-w-7xl mx-auto px-4 sm:px-6">
+          <ServicesPage />
+        </div>
+      )}
+      {currentPage === 'gallery' && (
+        <div className="relative z-30 pt-20 max-w-7xl mx-auto px-4 sm:px-6">
+          <GalleryPage />
+        </div>
+      )}
+      {currentPage === 'appointment' && (
+        <div className="relative z-30 pt-20 max-w-7xl mx-auto px-4 sm:px-6">
+          <AppointmentPage />
+        </div>
+      )}
 
       {/* SECTION 13: Luxury Footer Navigation Hub */}
-      <div className="relative z-30">
+      <div className="relative z-30 mt-16">
         <Footer onNavigate={handleNavigate} />
       </div>
     </div>
