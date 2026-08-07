@@ -12,7 +12,7 @@ export const AboutClinic: React.FC = () => {
   ];
 
   return (
-    <section id="about-clinic" className="relative py-28 px-6 bg-[#F8FAFC]/80 backdrop-blur-xl overflow-hidden border-t border-slate-200/60">
+    <section id="about-clinic" className="relative py-28 px-6 overflow-hidden border-t border-slate-200/20">
       {/* Background Glow Orbs */}
       <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[#0284C7]/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-10 left-0 w-[400px] h-[400px] bg-[#00A3FF]/5 rounded-full blur-[120px] pointer-events-none" />
